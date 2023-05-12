@@ -1,0 +1,13 @@
+{% load static %}                
+                <ul>
+                  <li class="d-flex align-items-center"><i class="bi bi-person"></i> <a href="#">{{res.blog_user}}</a></li>
+                  <li class="d-flex align-items-center"><i class="bi bi-clock"></i> <a href="#">{{res.blog_created}}</a></li>
+                  <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i>
+                     <a href="/blog/blog_detail/?pid={{res.id}}">
+                    {{comments_count}} Comments({{res.blog_comments_count}})
+                </a></li>
+                  <li class="d-flex align-items-center">                    
+                    <a href="/blog/press_like/?pid={{res.id}}&ret_addr={{request.get_full_path}}"><img src="{% static 'images/like.png' %}"></a>
+                    {{res.blog_likes}}
+                  <li> 
+                </ul>

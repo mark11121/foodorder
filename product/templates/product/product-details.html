@@ -1,0 +1,56 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load bootstrap5 %}
+{% block content %}
+   <main id="main">
+
+    <!-- ======= Breadcrumbs ======= -->
+    <div class="breadcrumbs d-flex align-items-center" style="background-image: url('/img/blog-header.jpg');">
+      <div class="container position-relative d-flex flex-column align-items-center">
+
+        <h2>詳細資料</h2>
+        <ol>
+          <li><a href="/">Home</a></li>
+          <li><a href="/product/product/">產品</a> 詳細資料</li>
+        </ol>
+
+      </div>
+    </div><!-- End Breadcrumbs -->
+
+    <!-- ======= Blog Details Section ======= -->
+    <section id="product" class="product">
+      <div class="container" data-aos="fade-up">
+
+        <div class="row g-5">
+
+          <div class="col-lg-12" data-aos="fade-up" data-aos-delay="200">
+
+            <article class="product-details">
+
+              <div class="post-img">
+                <img src="{% if product_item.image %}{{ product_item.image.url }}
+                {% else %}{% static 'img/no_image.png' %} {% endif %}" alt="" class="img-fluid">
+              </div>
+
+              <h2 class="title">{{ product_item.product_title }}</h2>
+              
+              <div class="meta-top">
+               
+              </div><!-- End meta top -->
+
+              <div class="content">
+                <p>{{ product_item.product_description }}</p>
+                <a href="{{request.META.HTTP_REFERER}}">返回</a>
+              </div><!-- End post content -->
+
+                              
+            </article><!-- End product post -->
+ 
+          </div>
+        </div>
+
+      </div>
+    </section><!-- End product Details Section -->
+
+  </main><!-- End #main -->
+  {% endblock %}

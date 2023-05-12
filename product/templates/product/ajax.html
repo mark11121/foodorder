@@ -1,0 +1,80 @@
+<style>
+  .error {
+    border: 1px solid red;
+  }
+</style>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- jQuery UI library -->
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.0/themes/smoothness/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
+<script>
+
+    $(document).ready(function() {
+    
+    $('#customer_code').on('blur', function() {
+      var customerCode = $(this).val();
+      $.ajax({
+        method: 'POST',
+        url: '/product/get_customer/',
+        data: { customer_code: customerCode },
+        dataType: 'json',
+        success: function(data) {
+          var customerName = data.last_name + ' ' + data.first_name;
+          $('#customer').val(customerName);
+          $('#customer_code').removeClass('error');          
+        },
+        error: function() {
+          alert('Error fetching customer data');
+          $('#customer_code').addClass('error');
+        }
+      });
+    });
+
+    $('#product_code').on('blur', function() {
+        var productCode = $(this).val();
+        
+        $.ajax({
+          method: 'POST',
+          url: '/product/get_product_name/',
+          data: { product_code: productCode },
+          dataType: 'json',
+          success: function(data) {
+            var name = data.name;
+            var price = data.price.toString();
+            
+            $('#product_name').val(name);
+            $('#product_price').val(price);
+            $('#product_code').removeClass('error');          
+        },
+          error: function() {
+            alert('Error fetching Product data');
+            $('#product_code').addClass('error');
+          }
+        });
+      });
+
+  });
+
+  $(document).ready(function() {
+    var availableTags = [
+      {% for product in products %}
+        "{{product.code}}-{{product.name}}",
+      {% endfor %}
+    ];
+  
+    $( "#product_code" ).autocomplete({
+      source: availableTags,
+      select: function(event, ui) {
+        // Extract the code from the selected item
+        var code = ui.item.value.split("-")[0];
+        
+        // Set the code as the value of the input field
+        $(this).val(code);
+        
+        // Prevent the default behavior of the widget
+        return false;
+      }
+    });
+  });
+</script>

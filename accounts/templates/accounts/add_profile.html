@@ -1,0 +1,50 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load bootstrap5 %}
+{% block title %}
+test
+{% endblock %}
+
+{% block content %}
+<main id="main">
+
+    <!-- ======= Breadcrumbs ======= -->
+    <div class="breadcrumbs d-flex align-items-center" style="background-image: url('/img/contact-header.jpg');">
+      <div class="container position-relative d-flex flex-column align-items-center">
+
+        <h2>加入會員</h2>
+        <ol>
+          <li><a href="index.html">Home</a></li>
+          <li>加入會員</li>
+        </ol>
+
+      </div>
+    </div><!-- End Breadcrumbs -->
+
+    <!-- ======= Contact Section ======= -->
+    <section id="contact" class="contact">
+      <div class="container position-relative" data-aos="fade-up">
+
+        <div class="row gy-4 d-flex justify-content-end">
+
+          {% include "accounts/basic_info.html" %}
+
+          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="250">
+
+            <form class="site-form" action="{% url 'accounts:add_profile' user_id=user_id %}" method="post">
+              {% csrf_token %}
+              {% bootstrap_form form %}
+              <input type="hidden"  name="user_id" value="{{user_id}}">
+              <input type="submit" value="送出" class="btn btn-success">
+            </form>
+
+          </div><!-- End Contact Form -->
+
+        </div>
+
+      </div>
+    </section><!-- End Contact Section -->
+
+  </main><!-- End #main -->
+
+{% endblock %}

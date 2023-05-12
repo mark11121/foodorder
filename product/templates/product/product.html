@@ -1,0 +1,105 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block title %}
+test
+{% endblock %}
+
+{% block content %}
+
+    <!-- ======= product Section ======= -->
+    <section id="product" class="product">
+      <div class="container" data-aos="fade-up">
+ <br>
+       <div class="section-header">
+          <h2>Our product</h2>
+          <p>Check Our <span>Yummy product</span></p>
+        </div>
+
+        <ul class="nav nav-tabs d-flex justify-content-center" data-aos="fade-up" data-aos-delay="200">
+
+          {% for product_category in product_categories %}
+          <li>
+              <h2> 
+                <a href="{{ product_category.get_absolute_url }}" {% if product_category.is_active %}class="active"{% endif %}>
+                  &nbsp;&nbsp;&nbsp;{{ product_category.name }}
+                </a>
+              </h2> 
+          </li><!-- End tab nav item -->
+          {% endfor %} 
+
+ 
+        </ul>
+
+        <div class="tab-content" data-aos="fade-up" data-aos-delay="300">
+
+          <div class="tab-pane fade active show" id="product-starters">
+
+            <div class="tab-header text-center">
+              <p><a href="{% url 'imsApp:product-page' %}">Products</a></p>
+              <h3>{{ product_category.name }}&nbsp;&nbsp;&nbsp;{{ product_category.slug }}</h3>
+            </div>
+
+            {% if product_items.has_other_pages %}
+            <nav class="blog-pagination">
+              <ul class="justify-content-center">
+                {% if product_items.has_previous %}
+                  <li><a href="?page=1">First</a></li>
+                  <li><a href="?page={{ product_items.previous_page_number }}"><</a></li>
+                {% endif %}
+                {% for num in product_items.paginator.page_range %}
+                  {% if product_items.number == num %}
+                    <li class="active"><a href="#">{{ num }}</a></li>
+                  {% elif num > product_items.number|add:'-3' and num < product_items.number|add:'3' %}
+                    <li><a href="?page={{ num }}">{{ num }}</a></li>
+                  {% endif %}
+                {% endfor %}
+                {% if product_items.has_next %}
+                  <li><a href="?page={{ product_items.next_page_number }}">></a></li>
+                  <li><a href="?page={{ product_items.paginator.num_pages }}">Last</a></li>
+                {% endif %}
+              </ul>
+            </nav>
+            {% endif %}
+            <div class="row gy-5">
+              {% for product in product_items %}
+              <div class="col-lg-4 product-item">
+                <a href="{{ product.get_absolute_url }}">
+                  <img class="img-fluid" src="{% if product.image %}{{ product.image.url }}
+                            {% else %}{% static 'img/no_image.png' %} {% endif %}">
+                </a>
+                <h4>{{product.product_category.name}}</h4>
+                <h4>{{ product.product_title }} <br></h4>
+                <h4>
+                <a href="/product/edit_product/?pid={{product.id}}"><img src="{% static 'images/edit.png' %}"></a>
+                <a href="/product/delete_product/?pid={{product.id}}"><img src="{% static 'images/del.png' %}"></a>
+                </h4>
+                <p class="ingredients">
+                  {{ product.product_description | slice:":30" }}
+                  {% if product.product_description|length > 30 %}...
+                  <a href="/product/product_detail/?pid={{product.id}}">詳細資料 <i class="bi bi-arrow-right"></i></a>
+                  {% endif %}
+                </p>
+                
+                <p class="price">
+                  ${{ product.price }}
+                </p>
+              </div><!-- product Item -->
+              {% endfor %}
+
+
+            </div>
+
+ 
+  
+          </div><!-- End Starter product Content -->
+
+          
+        </div>
+  
+
+ 
+
+      </div>
+    </section><!-- End Product Section -->
+
+{% endblock %}

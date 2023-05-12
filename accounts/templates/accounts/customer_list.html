@@ -1,0 +1,95 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load bootstrap5 %}
+{% block title %}
+Customers
+{% endblock %}
+<style>
+    .align-left {
+        text-align: left;
+    }
+</style>
+{% block content %}
+<main id="main">
+    <!-- ======= Breadcrumbs ======= -->
+    <div class="breadcrumbs d-flex align-items-center" style="background-image: url('/static/assets/img/contact-header.jpg');">
+      <div class="container position-relative d-flex flex-column align-items-center">
+        <h2>Customer Management</h2>
+        <ol>
+          <li><a href="/">Home</a></li>
+          <li>客戶管理</li>
+        </ol>
+      </div>
+    </div><!-- End Breadcrumbs -->
+ 
+    <!-- ======= Customer Section ======= -->
+    <section>
+      {% url 'accounts:customer_list' as action_url %}
+      {% include 'main/search.html' with action_url=action_url searchform=searchform %}  
+      <div class="d-flex justify-content-between mb-3">         
+           <div class="col text-start text-muted">全部: {{ total_records }} 筆</div>                        
+                <a href="{% url 'accounts:create_customer' %}" class="btn btn-primary rounded-0 bg-gradient btn-sm" id='add_new'>
+                   <span aria-hidden="true">&plus;</span> 新增客戶
+                </a>
+           </div>     
+      </div>    
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover shadow">
+          <thead class="bg-secondary text-white">
+            <tr>
+              <th class="align-left">Code</th>                
+              <th class="align-left">First Name</th>
+              <th class="align-left">Last Name</th>
+              <th class="align-left">Email</th>
+              <th class="align-left">Gender</th>
+              <th class="align-left">Cellphone</th>
+              <th class="align-left">Birthdate</th>
+              <th class="align-left">Address</th>
+              <th class="align-left">Company</th>
+              <th class="align-left">Job Title</th>
+              <th class="align-left">Notes</th>
+              <th class="align-left"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for customer in customers %}
+            <tr>
+              <td class="align-left">{{ customer.customer_code }}</td>
+              <td class="align-left">{{ customer.first_name }}</td>
+              <td class="align-left">{{ customer.last_name }}</td>
+              <td class="align-left">{{ customer.email }}</td>
+              <td class="align-left">{{ customer.gender }}</td>
+              <td class="align-left">{{ customer.cellphone }}</td>
+              <td class="align-left">{{ customer.birthdate }}</td>
+              <td class="align-left">{{ customer.address }}</td>
+              <td class="align-left">{{ customer.company }}</td>
+              <td class="align-left">{{ customer.job_title }}</td>
+              <td class="align-left">{{ customer.notes }}</td>
+              <td class="align-left">
+                <a href="{% url 'product:add_invoice_item_from_cust' customer_code=customer.customer_code %}" class="btn btn-primary rounded-0 bg-gradient btn-sm" id='add_new'>
+                  <span aria-hidden="true">&plus;</span> 新增銷單
+               </a>
+              </td>
+            </tr>
+            <tr>
+              <td></td>
+              <td colspan="10">
+                <table>
+                  <tr>
+                    <td><strong>付款方式:</strong> {{ customer.payment_method }}</td>
+                    <td><strong>帳單地址:</strong> {{ customer.billing_address }}</td>
+                    <td><strong>信用卡號:</strong> {{ customer.card_number }}</td>
+                    <td><strong>有效日期:</strong> {{ customer.card_expiration_date }}</td>
+                    <td><strong>Card CVV:</strong> {{ customer.card_cvv }}</td>
+                  </tr>
+                </table>               
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main><!-- End #main -->
+  {% include 'main/pagination.html' with items=customers %}
+{% endblock %}

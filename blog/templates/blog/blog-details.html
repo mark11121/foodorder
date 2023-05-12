@@ -1,0 +1,158 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load bootstrap5 %}
+{% block content %}
+   <main id="main">
+
+    <!-- ======= Breadcrumbs ======= -->
+    <div class="breadcrumbs d-flex align-items-center" style="background-image: url('/img/blog-header.jpg');">
+      <div class="container position-relative d-flex flex-column align-items-center">
+
+        <h2>詳細資料</h2>
+        <ol>
+          <li><a href="/">Home</a></li>
+          <li><a href="/blog/blog/">Blog</a>/Detail</li>
+        </ol>
+
+      </div>
+    </div><!-- End Breadcrumbs -->
+
+    <!-- ======= Blog Details Section ======= -->
+    <section id="blog" class="blog">
+      <div class="container" data-aos="fade-up">
+
+        <div class="row g-5">
+
+          <div class="col-lg-8" data-aos="fade-up" data-aos-delay="200">
+
+            <article class="blog-details">
+
+              <div class="post-img">
+                <img src="{% if res.image %}{{ res.image.url }}
+                {% else %}{% static 'img/no_image.png' %} {% endif %}" alt="" class="img-fluid">
+              </div>
+
+              <h2 class="title">{{ res.blog_title }}</h2>
+              
+              <div class="meta-top">
+               <p>{% include "blog/meta_part.html" %}</p>
+              </div><!-- End meta top -->
+
+              <div class="content">
+                <p>{{ res.blog_content }}</p>
+                <a href="{{request.META.HTTP_REFERER}}">返回</a>
+              </div><!-- End post content -->
+
+              <div class="meta-bottom">
+                <i class="bi bi-folder"></i>
+                <ul class="cats">
+                  <li><a href="#">Business</a></li>
+                </ul>
+
+                <i class="bi bi-tags"></i>
+                <ul class="tags">
+                  <li><a href="#">Creative</a></li>
+                  <li><a href="#">Tips</a></li>
+                  <li><a href="#">Marketing</a></li>
+                </ul>
+              </div><!-- End meta bottom -->
+
+            </article><!-- End blog post -->
+            <div> <h4>評論</h4></div>
+
+            
+              
+              
+              {% for comments in cres %} 
+              <div class="post-author d-flex align-items-center">
+             
+              <div>
+                <h4>{{comments.name}}</h4>
+                
+                <p>
+                    {{comments.comment}}<br>
+                    {{comments.commen_created}}<br>
+                </p>
+                  <a href="/blog/del_comment/?pid={{comments.id}}&ret_addr={{request.get_full_path}}"><img src="{% static 'images/del.png' %}"></a>
+              </div>
+            </div>
+              {% endfor %}
+          
+            <div class="reply-form">
+
+              <h4>說說你的看法</h4>
+              <p></p>
+              <form action="/blog/post_comment/" method="POST">
+                {% csrf_token %}
+                <div class="row">
+                  <div class="col-md-6 form-group">
+                    <input type="hidden" name="bid" value="{{res.id}}">
+                    <input type="hidden" name="ret_addr" value="{{ request.get_full_path }}" >
+                    <input name="name" type="text" class="form-control" placeholder="Your Name*">
+                  </div>
+                  <div class="col-md-6 form-group">
+                    <input name="email" type="text" class="form-control" placeholder="Your Email*">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col form-group">
+                    <input name="website" type="text" class="form-control" placeholder="Your Website">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col form-group">
+                    <textarea name="comment" class="form-control" placeholder="Your Comment*"></textarea>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary">送出</button>
+
+              </form>
+
+            </div>
+ 
+          </div>
+
+          <div class="col-lg-4" data-aos="fade-up" data-aos-delay="400">
+
+            <div class="sidebar ps-lg-4">
+
+              <div class="sidebar-item search-form">
+                {% include "blog/search_title.html" %}
+              </div><!-- End sidebar search formn-->
+
+              <div class="sidebar-item categories">
+                {% include "blog/side_category.html" %}
+ 
+              </div><!-- End sidebar categories-->
+
+              <div class="sidebar-item recent-posts">
+                {% include "blog/recent_post.html" %}
+ 
+              </div><!-- End sidebar recent posts-->
+              <div class="sidebar-item tags">
+                <h3 class="sidebar-title">Tags</h3>
+                <ul class="mt-3">
+                  <li><a href="#">App</a></li>
+                  <li><a href="#">IT</a></li>
+                  <li><a href="#">Business</a></li>
+                  <li><a href="#">Mac</a></li>
+                  <li><a href="#">Design</a></li>
+                  <li><a href="#">Office</a></li>
+                  <li><a href="#">Creative</a></li>
+                  <li><a href="#">Studio</a></li>
+                  <li><a href="#">Smart</a></li>
+                  <li><a href="#">Tips</a></li>
+                  <li><a href="#">Marketing</a></li>
+                </ul>
+              </div><!-- End sidebar tags-->
+
+            </div><!-- End Blog Sidebar -->
+
+          </div>
+        </div>
+
+      </div>
+    </section><!-- End Blog Details Section -->
+
+  </main><!-- End #main -->
+  {% endblock %}

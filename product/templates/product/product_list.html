@@ -1,0 +1,80 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load bootstrap5 %}
+{% block title %}
+    product List
+{% endblock %}
+{% block head %}
+    {{ block.super }}
+    
+{% endblock %}   
+{% block content %}
+    <main id="main">
+        <!-- ======= Breadcrumbs ======= -->
+        <div class="breadcrumbs d-flex align-items-center" style="background-image: url('/static/assets/img/contact-header.jpg');">
+            <div class="container position-relative d-flex flex-column align-items-center">
+                <h2>product List</h2>
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li>product List</li>
+                </ol>
+            </div>
+        </div><!-- End Breadcrumbs -->
+         
+ 
+        <!-- ======= product Section ======= -->
+        <section>
+            {% url 'product:product_list' as action_url %}
+            {% include 'main/search.html' with action_url=action_url searchform=searchform %}            
+            
+            <div class="d-flex justify-content-between mb-3">         
+                <div class="col text-start text-muted">全部: {{ total_records }} 筆</div>        
+                     <a href="{% url 'product:add_product' %}" class="btn btn-primary rounded-0 bg-gradient btn-sm" id='add_new'>
+                        <span aria-hidden="true">&plus;</span> 新增產品
+                      </a>
+               </div>
+            </div>       
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover shadow">
+                      <thead class="bg-secondary text-white">
+                        <tr>
+                            <th class="align-left">ID</th>
+                            <th class="align-left">Code</th>
+                            <th class="align-left">Name</th>
+                            <th class="align-left">Price</th>
+                            <th class="align-left">Description</th>
+                            <th class="align-left">Category</th>
+                            <th class="align-left">Status</th>
+                            <th class="align-left">庫存數</th>
+                            <th class="align-left">Date Created</th>
+                            <th class="align-left">Date Updated</th>
+                            <th class="align-left">By</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                        <tr>
+                            <td class="align-left">{{ product.id }}</td>
+                            <td class="align-left">{{ product.code }}</td>
+                            <td class="align-left">{{ product.name }}</td>
+                            <td class="align-left">{{ product.price }}</td>
+                            <td class="align-left">{{ product.description }}</td>
+                            <td class="align-left">{{ product.product_category.name }}</td>
+                            <td class="align-left">{{ product.status }}</td>
+                            <td class="align-left">{{ product.count_inventory }}</td>  
+                            <td class="align-left">{{ product.date_created|date:'Y-m-d H:i:s' }}</td>
+                            <td class="align-left">{{ product.date_updated|date:'Y-m-d H:i:s' }}</td>
+                            <td class="align-left">{{ product.user_created }}</td>  
+                            <td class="align-left">
+                                <a href="/product/edit_product/?pid={{product.id}}"><img src="{% static 'images/edit.png' %}"></a>
+                            </td>                                          
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section><!-- End product Section -->
+    </main><!-- End #main -->
+    {% include 'main/pagination.html' with items=products %}
+{% endblock %}

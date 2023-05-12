@@ -1,0 +1,72 @@
+{% load static %}
+{% load bootstrap5 %}
+
+<style>
+  .btn-search {
+      background-image: url("{% static 'images/searchData.png' %}");
+      background-repeat: no-repeat;
+      background-position: center center;
+      width: 70px;
+      height: 50px;
+      border: none;
+      outline: none;
+      padding: 0;
+      margin: 0;
+      transition: background-image 0.5s ease;
+    }
+    
+    .btn-search:hover {
+      background-image: url("{% static 'images/searchData_over.png' %}");
+    }
+  
+    .btn-search.active {
+      background-image: url("{% static 'images/close.png' %}");
+    }
+
+    .btn-search.active:hover {
+      background-image: url("{% static 'images/close_over.png' %}");
+    }
+</style>
+
+<script>
+  /* Add an event listener to the button that toggles the "active" class when it is clicked */
+  var btnSearch = document.querySelector('.btn-search');
+  btnSearch.addEventListener('click', function() {
+      btnSearch.classList.toggle('active');
+  });
+</script>
+
+<div class="header_table text-center">
+  <button class="btn btn-link btn-search" type="button" data-bs-toggle="collapse" 
+      data-bs-target="#query_block" aria-expanded="false" aria-controls="query_block">
+
+  </button>
+</div>
+
+<div class="collapse" id="query_block">
+  <!-- Content to show/hide goes here -->
+  <div class="col-lg-6 mx-auto" data-aos="fade-up" data-aos-delay="250">
+  <!-- Content to show/hide goes here -->
+  <form action="{% url 'product:product_list' %}" method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+         <div class="form-group">
+             <div class="form-group col-md-12">
+                 {% bootstrap_form searchform %}
+                 <input class="btn btn-success" type="submit" value="送出" />
+              </div>
+         </div>
+ </form>
+   
+  </div>
+</div>
+<script>
+  var btnSearch = document.querySelector('.btn-search');
+  btnSearch.addEventListener('click', function() {
+      btnSearch.classList.toggle('active');
+      if (btnSearch.classList.contains('active')) {
+          btnSearch.style.backgroundImage = "url('{% static 'images/close.png' %}')";
+      } else {
+          btnSearch.style.backgroundImage = "url('{% static 'images/searchData.png' %}')";
+      }
+  });
+</script>

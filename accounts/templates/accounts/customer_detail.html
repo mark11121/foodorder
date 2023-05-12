@@ -1,0 +1,23 @@
+{% extends 'main/base.html' %}
+
+{% block title %}
+Customer Detail
+{% endblock %}
+
+{% block content %}
+  <h1>Customer Detail</h1>
+  <hr>
+  <h2>{{ customer.name }}</h2>
+  <p><strong>Email:</strong> {{ customer.email }}</p>
+  <p><strong>Phone:</strong> {{ customer.phone }}</p>
+  <p><strong>Address:</strong> {{ customer.address }}</p>
+  <hr>
+  <a href="{% url 'customer_list' %}">Back to Customer List</a>
+{% endblock %}
+You can customize the styling and layout of the page to fit your needs.
+
+
+
+
+
+

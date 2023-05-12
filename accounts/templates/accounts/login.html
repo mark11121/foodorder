@@ -1,0 +1,56 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load bootstrap5 %}
+{% block title %}
+test
+{% endblock %}
+
+{% block content %}
+<main id="main">
+
+    <!-- ======= Breadcrumbs ======= -->
+    <div class="breadcrumbs d-flex align-items-center" style="background-image: url('/img/contact-header.jpg');">
+      <div class="container position-relative d-flex flex-column align-items-center">
+
+        <h2>登入</h2>
+        <ol>
+          <li><a href="/">Home</a></li>
+          <li>登入</li>
+        </ol>
+
+      </div>
+    </div><!-- End Breadcrumbs -->
+
+    <!-- ======= Contact Section ======= -->
+    <section id="contact" class="contact">
+      <div class="container position-relative" data-aos="fade-up">
+
+        <div class="row gy-4 d-flex justify-content-end">
+
+ {% include "accounts/basic_info.html" %}
+
+          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="250" border border primary>
+
+            <form class="site-form" action="{% url 'accounts:login' %}" method="post">
+               <div class="logging-form">
+                {% csrf_token %}
+                {% bootstrap_form form %}
+                {% if request.GET.next %}
+                <input type="hidden" name="next" value="/portfolio/">
+                {% endif %}
+                <input type="submit" value="登入" class="btn btn-success" />
+               </div>
+            </form>
+            <br>
+            <p>加入會員嗎? <a href="{% url 'accounts:signup' %}" ><u>按我加入</u></a></p>
+          </div><!-- End Contact Form -->
+          
+        </div>
+        </div>
+
+      </div>
+    </section><!-- End Contact Section -->
+
+  </main><!-- End #main -->
+
+{% endblock %}

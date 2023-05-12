@@ -1,0 +1,93 @@
+.nav a:hover {
+    color: #173b6c !important;
+    text-decoration: none;
+    border-bottom: 2px solid red;
+ }
+  
+/*******************************/
+/********** Menu CSS ***********/
+/*******************************/
+.food {
+    position: relative;
+    width: 100%;
+    padding: 90px 0 60px 0;
+    margin: 45px 0;
+    background: rgba(0, 0, 0, .04);
+}
+
+.food .food-item {
+    position: relative;
+    width: 100%;
+    margin-bottom: 30px;
+    padding: 50px 30px 30px;
+    text-align: center;
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, .08);
+    transition: .3s;
+}
+
+.food .food-item:hover {
+    box-shadow: none;
+}
+
+.food .food-item i {
+    position: relative;
+    display: inline-block;
+    color: #fbaf32;
+    font-size: 60px;
+    line-height: 60px;
+    margin-bottom: 20px;
+    transition: .3s;
+}
+
+.food .food-item:hover i {
+    color: #719a0a;
+}
+
+.food .food-item i::after {
+    position: absolute;
+    content: "";
+    width: calc(100% + 20px);
+    height: calc(100% + 20px);
+    top: -20px;
+    left: -15px;
+    border: 3px dotted #fbaf32;
+    border-right: transparent;
+    border-bottom: transparent;
+    border-radius: 100px;
+    transition: .3s;
+}
+
+.food .food-item:hover i::after {
+    border: 3px dotted #719a0a;
+    border-right: transparent;
+    border-bottom: transparent;
+}
+
+.food .food-item h2 {
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.food .food-item a {
+    position: relative;
+    font-size: 16px;
+}
+
+.food .food-item a::after {
+    position: absolute;
+    content: "";
+    width: 50px;
+    height: 1px;
+    bottom: 0;
+    left: calc(50% - 25px);
+    background: #fbaf32;
+    transition: .3s;
+}
+
+.food .food-item a:hover::after {
+    width: 100%;
+    left: 0;
+    background: #719a0a;
+}

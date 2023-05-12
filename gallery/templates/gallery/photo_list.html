@@ -1,0 +1,72 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load bootstrap5 %}
+{% block title %}
+photo List
+{% endblock %}
+{% block head %}
+    {{ block.super }}
+    
+{% endblock %}   
+{% block content %}
+    <main id="main">
+        <!-- ======= Breadcrumbs ======= -->
+        <div class="breadcrumbs d-flex align-items-center" style="background-image: url('/img/contact-header.jpg');">
+            <div class="container position-relative d-flex flex-column align-items-center">
+                <h2>photo List</h2>
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li>photo List</li>
+                </ol>
+            </div>
+        </div><!-- End Breadcrumbs -->
+         
+ 
+        <!-- ======= photo Section ======= -->
+        <section>
+            {% url 'gallery:photo_list' as action_url %}
+            {% include 'main/search.html' with action_url=action_url searchform=searchform %}            
+            
+            <div class="d-flex justify-content-between mb-3">         
+                <div class="col text-start text-muted">全部: {{ total_records }} 筆</div>        
+                     <a href="{% url 'gallery:add_photo' %}" class="btn btn-primary rounded-0 bg-gradient btn-sm" id='add_new'>
+                        <span aria-hidden="true">&plus;</span> 新增相片
+                      </a>
+               </div>
+            </div>       
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover shadow">
+                      <thead class="bg-secondary text-white">
+                        <tr>
+                            <th class="align-left">ID</th>
+                            <th class="align-left">Category</th>
+                            <th class="align-left">Title</th>
+                            <th class="align-left">Description</th>
+
+                            <th>修改</th>
+                            <th>刪除</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for photo in photos %}
+                        <tr>
+                            <td class="align-left">{{ photo.id }}</td>
+                            <td class="align-left">{{ photo.photo_category.name }}</td>
+                            <td class="align-left">{{ photo.title }}</td>
+                            <td class="align-left">{{ photo.description }}</td>
+
+                            <td class="align-left">
+                                <a href="/gallery/edit_photo/?pid={{photo.id}}"><img src="{% static 'images/edit.png' %}"></a>
+                            </td>   
+                            <td class="align-left">
+                                <a href="/gallery/delete_photo/?pid={{photo.id}}"><img src="{% static 'images/del.png' %}"></a>
+                            </td>                                        
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section><!-- End photo Section -->
+    </main><!-- End #main -->
+    {% include 'main/pagination.html' with items=photos %}
+{% endblock %}

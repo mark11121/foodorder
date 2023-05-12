@@ -1,0 +1,68 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load bootstrap5 %}
+{% block title %}
+    chef List
+{% endblock %}
+{% block head %}
+    {{ block.super }}
+    
+{% endblock %}   
+{% block content %}
+    <main id="main">
+        <!-- ======= Breadcrumbs ======= -->
+        <div class="breadcrumbs d-flex align-items-center" style="background-image: url('/img/contact-header.jpg');">
+            <div class="container position-relative d-flex flex-column align-items-center">
+                <h2>chef List</h2>
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li>chef List</li>
+                </ol>
+            </div>
+        </div><!-- End Breadcrumbs -->
+         
+ 
+        <!-- ======= chef Section ======= -->
+        <section>
+            {% url 'chef:chef_list' as action_url %}
+            {% include 'main/search.html' with action_url=action_url searchform=searchform %}            
+
+            <div class="d-flex justify-content-between mb-3">         
+                <div class="col text-start text-muted">全部: {{ total_records }} 筆</div>        
+                     <a href="{% url 'chef:add_chef' %}" class="btn btn-primary rounded-0 bg-gradient btn-sm" id='add_new'>
+                        <span aria-hidden="true">&plus;</span> 新增廚師
+                      </a>
+               </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover shadow">
+                      <thead class="bg-secondary text-white">
+                        <tr>
+                            <th class="align-left">ID</th>
+                            <th class="align-left">廚師名稱</th>
+                            <th class="align-left">廚師頭銜</th>
+                            <th class="align-left">廚師介紹</th>
+
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for chef in chefs %}
+                        <tr>
+                            <td class="align-left">{{ chef.id }}</td>
+                            <td class="align-left">{{ chef.chef_name }}</td>
+                            <td class="align-left">{{ chef.chef_title }}</td>
+                            <td class="align-left">{{ chef.chef_profile }}</td>
+
+                            <td class="align-left">
+                                <a href="/chef/edit_chef/?pid={{chef.id}}"><img src="{% static 'images/edit.png' %}"></a>
+                            </td>                                          
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section><!-- End chef Section -->
+    </main><!-- End #main -->
+    {% include 'main/pagination.html' with items=chefs %}
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load bootstrap5 %}
+{% block title %}
+test
+{% endblock %}
+<style>
+  .align-left {
+  text-align: left;
+  color: orange;
+  background-color: yellow;
+}
+</style>
+{% block content %}
+  <main id="main">
+
+    <!-- ======= Breadcrumbs ======= -->
+    <div class="breadcrumbs d-flex align-items-center" style="background-image: url('/img/contact-header.jpg');">
+      <div class="container position-relative d-flex flex-column align-items-center">
+
+        <h2>相片管理</h2>
+        <ol>
+          <li><a href="/">Home</a></li>
+          <li>新增相片類別</li>
+        </ol>
+
+      </div>
+    </div><!-- End Breadcrumbs -->
+
+    <!-- ======= Contact Section ======= -->
+    <section id="contact" class="contact">
+      <div class="container position-relative" data-aos="fade-up">
+
+        <div class="row gy-4 d-flex justify-content-end">
+
+          <div class="col-lg-5" data-aos="fade-up" data-aos-delay="100">
+
+            <div class="info-item d-flex">
+              <i class="bi bi-geo-alt flex-shrink-0"></i>
+              <div>
+                <h4>新增相片類別:</h4>
+                <p>新增相片類別</p>
+                {% for photo_category in photo_categorys %}
+                        <td class="align-left">
+                            <a href="/gallery/edit_photo_category/?pid={{photo_category.id}}">{{photo_category.name}}</a>({{photo_category.photo_items_count}})                          
+                            {% if photo_category.photo_items_count == 0 %}
+                                <a href="/gallery/del_photo_category/?pid={{photo_category.id}}"
+                                   onclick="return confirm('確定刪除?');">
+                                   <img src="{% static 'images/del.png' %}">
+                                </a>
+                            {% endif %}    
+                {% endfor %}
+              </div>
+            </div><!-- End Info Item -->
+
+            <div class="info-item d-flex">
+              <i class="bi bi-envelope flex-shrink-0"></i>
+              <div>
+                <h4>Email:</h4>
+                <p>info@example.com</p>
+              </div>
+            </div><!-- End Info Item -->
+
+            <div class="info-item d-flex">
+              <i class="bi bi-phone flex-shrink-0"></i>
+              <div>
+                <h4>Call:</h4>
+                <p>+1 5589 55488 55</p>
+              </div>
+            </div><!-- End Info Item -->
+
+          </div>
+
+          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="250">
+
+            <form action="{% url 'gallery:add_photo_category' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                   <div class="form-group">
+                       <div class="form-group col-md-12">
+                           {% bootstrap_form form %}
+                           <input class="btn btn-success" type="submit" value="儲存" />
+                        </div>
+                   </div>
+           </form>
+
+          </div><!-- End Contact Form -->
+
+        </div>
+
+      </div>
+    </section><!-- End Contact Section -->
+
+  </main><!-- End #main -->
+{% endblock %}
+ 

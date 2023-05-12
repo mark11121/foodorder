@@ -1,0 +1,49 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}
+Chefs
+{% endblock %}
+
+{% block content %}
+     <!-- ======= Chefs Section ======= -->
+     <section id="chefs" class="chefs section-bg">
+      <div class="container" data-aos="fade-up">
+ <br>
+        <div class="section-header">
+          <h2>Chefs</h2>
+          <p>Our <span>Proffesional</span> Chefs</p>
+        </div>
+
+        <div class="row gy-4">
+
+          {% for chef in chefs %}
+          <div class="col-lg-4 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="{{ chef.delay }}">
+            <div class="chef-member">
+              <div class="member-img">
+                <img src="/media/{{ chef.chef_img }}" class="img-fluid" alt="">
+                <div class="social">
+                  <a href=""><i class="bi bi-twitter"></i></a>
+                  <a href=""><i class="bi bi-facebook"></i></a>
+                  <a href=""><i class="bi bi-instagram"></i></a>
+                  <a href=""><i class="bi bi-linkedin"></i></a>
+                </div>
+              </div>
+              <div class="member-info">
+                <h4>{{ chef.chef_name }}</h4>
+                <span>{{ chef.chef_title }}</span>
+                <p>{{ chef.chef_profile }}</p>
+                <a href="/chef/edit_chef/?pid={{chef.id}}"><img src="{% static 'images/edit.png' %}"></a>
+                <a href="/chef/del_chef/?pid={{chef.id}}"><img src="{% static 'images/del.png' %}"></a>
+              </div>
+            </div>
+          </div><!-- End Chefs Member -->
+          {% endfor %}
+
+        </div>
+
+      </div>
+    </section><!-- End Chefs Section -->
+
+
+{% endblock %}

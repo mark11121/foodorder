@@ -1,0 +1,93 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load bootstrap5 %}
+{% block title %}
+test
+{% endblock %}
+<style>
+    .align-left {
+        text-align: left;
+    }
+</style>
+{% block content %}
+<main id="main">
+    <!-- ======= Breadcrumbs ======= -->
+    <div class="breadcrumbs d-flex align-items-center" style="background-image: url('/img/contact-header.jpg');">
+      <div class="container position-relative d-flex flex-column align-items-center">
+        <h2>會員管理</h2>
+        <ol>
+          <li><a href="/">Home</a></li>
+          <li>會員管理</li>
+        </ol>
+      </div>
+    </div><!-- End Breadcrumbs -->
+   
+    <!-- ======= Contact Section ======= -->
+    <section>
+      {% url 'accounts:user_list' as action_url %}
+      {% include 'main/search.html' with action_url=action_url searchform=searchform %}     
+      
+      <div class="d-flex justify-content-between mb-3">
+         
+             <div class="col text-start text-muted">全部: {{ total_records }} 筆</div>
+        
+        <a href="{% url 'accounts:signup_new' %}" class="btn btn-primary rounded-0 bg-gradient btn-sm" id='add_new'>
+          <span aria-hidden="true">&plus;</span> 新增會員
+        </a>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover shadow">
+          <thead class="bg-secondary text-white">
+            <tr>
+              <th class="align-left">用戶名</th>
+              <th class="align-left">eMail</th>
+              <th class="align-left">名字</th>
+              <th class="align-left">姓</th>
+              <th class="align-left">地址</th>
+              <th class="align-left">Superuser</th>
+              <th class="align-left">Profile</th>
+              <th class="align-left">刪除Profile</th>
+              <th class="align-left">刪除會員</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in users %}
+            <tr>
+              <td class="align-left">{{ user.username }}</td>
+              <td class="align-left">{{ user.email }}</td>
+              <td class="align-left">{{ user.first_name }}</td>
+              <td class="align-left">{{ user.last_name }}</td>
+              <td class="align-left">{{ user.profile.address }}</td>
+              <td class="align-left">
+                {% if not user.is_superuser %}
+                <a href="{% url 'accounts:make_superuser' user.id %}">No</a>
+                {% else %}
+                <a href="{% url 'accounts:del_superuser' user.id %}">Yes</a>
+                {% endif %}
+              </td>
+              <td class="align-left">
+                {% if user.profile %}
+                <a title='有profile' href="{% url 'accounts:edit_profile' user.profile.id %}">Yes</a>
+                {% else %}
+                <a title='無profile' href="{% url 'accounts:add_profile' user.id %}">No</a>
+                {% endif %}
+              </td>
+              <td class="align-left">
+                {% if user.profile %}
+                <a href="{% url 'accounts:del_profile' user.id %}">Delete</a>
+                {% endif %}
+              </td>
+              <td class="align-left">
+                {% if user %}
+                <a href="{% url 'accounts:del_user' user.id %}" onclick="return confirm('確定刪除 {{ user.username }} ?')">Delete</a>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main><!-- End #main -->
+  {% include 'main/pagination.html' with items=users %}
+{% endblock %}

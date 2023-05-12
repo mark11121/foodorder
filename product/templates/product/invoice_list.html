@@ -1,0 +1,72 @@
+{% extends 'main/base.html' %}
+{% load bootstrap5 %}
+
+{% block title %}
+    Invoice List
+{% endblock %}
+
+{% block content %}
+    <main id="main">
+        <!-- ======= Breadcrumbs ======= -->
+        <div class="breadcrumbs d-flex align-items-center" style="background-image: url('/static/assets/img/contact-header.jpg');">
+            <div class="container position-relative d-flex flex-column align-items-center">
+                <h2>Invoice List</h2>
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li>Invoice List</li>
+                </ol>
+            </div>
+        </div><!-- End Breadcrumbs -->
+         
+        
+              <!-- ======= Invoice Section ======= -->
+        <section>
+            {% url 'product:invoice_list' as action_url %}
+            {% include 'main/search.html' with action_url=action_url searchform=searchform %}
+            <div class="d-flex justify-content-between mb-3">         
+                <div class="col text-start text-muted">全部: {{ total_records }} 筆</div>        
+                     <a href="{% url 'product:add_invoice_item' %}" class="btn btn-primary rounded-0 bg-gradient btn-sm" id='add_new'>
+                        <span aria-hidden="true">&plus;</span> 新增銷售
+                      </a>
+               </div>
+            </div>       
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover shadow">
+                    <thead class="bg-secondary text-white">
+                        <tr>
+                            <th class="align-left">Invoice ID</th>
+                            <th class="align-left">交易編號</th>
+                            <th class="align-left">顧客編號</th>
+                            <th class="align-left">顧客</th>
+                            <th class="align-left">總計</th>
+                            <th class="align-left">創建日期</th>
+                            <th class="align-left">更新日期</th>
+                            <th class="align-left">發票項目</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for invoice in invoices %}
+                        <tr>
+                            <td class="align-left">{{ invoice.id }}</td>
+                            <td class="align-left">{{ invoice.transaction }}</td>
+                            <td class="align-left">{{ invoice.customer_code }}</td>
+                            <td class="align-left">{{ invoice.customer }}</td>
+                            <td class="align-left">{{ invoice.total }}</td>
+                            <td class="align-left">{{ invoice.date_created|date:'Y-m-d H:i:s' }}</td>
+                            <td class="align-left">{{ invoice.date_updated|date:'Y-m-d H:i:s' }}</td>
+                            <td class="align-left">
+                                <ul>
+                                    {% for item in invoice.invoice_item_set.all %}
+                                    <li>{{ item.product.name }} - ${{ item.price }} - qty{{ item.quantity }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section><!-- End Invoice Section -->
+    </main><!-- End #main -->
+    {% include 'main/pagination.html' with items=invoices %}
+{% endblock %}

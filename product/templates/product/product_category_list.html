@@ -1,0 +1,69 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load bootstrap5 %}
+{% block title %}
+    product List
+{% endblock %}
+{% block head %}
+    {{ block.super }}
+    
+{% endblock %}   
+{% block content %}
+    <main id="main">
+        <!-- ======= Breadcrumbs ======= -->
+        <div class="breadcrumbs d-flex align-items-center" style="background-image: url('/img/contact-header.jpg'); margin-bottom: -20px;">
+            <div class="container position-relative d-flex flex-column align-items-center">
+                <h2>product Category List</h2>
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li>product List</li>
+                </ol>
+            </div>
+        </div><!-- End Breadcrumbs -->
+         
+      
+        <!-- ======= product Section ======= -->
+        <section>
+            {% url 'product:product_category_list' as action_url %}
+            {% include 'main/search.html' with action_url=action_url searchform=searchform %}
+            <div class="d-flex justify-content-between mb-3">         
+                <div class="col text-start text-muted">全部: {{ total_records }} 筆</div>        
+                     <a href="{% url 'product:add_product_category' %}" class="btn btn-primary rounded-0 bg-gradient btn-sm" id='add_new'>
+                       <span aria-hidden="true">&plus;</span> 新增產品類別
+                     </a>
+               </div>
+            </div>       
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover shadow">
+                      <thead class="bg-secondary text-white">
+                        <tr>
+                            <th class="align-left">ID</th>
+                            <th class="align-left">Name</th>
+                            <th class="align-left">description</th>
+                            <th class="align-left">status</th>
+                            <th class="align-left">Date Created</th>
+                            <th class="align-left">Date Updated</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product_category in product_categorys %}
+                        <tr>
+                            <td class="align-left">{{ product_category.id }}</td>
+                            <td class="align-left">{{ product_category.name }}</td>
+                            <td class="align-left">{{ product_category.description }}</td>
+                            <td class="align-left">{{ product_category.status }}</td>
+                            <td class="align-left">{{ product_category.date_created|date:'Y-m-d H:i:s' }}</td>
+                            <td class="align-left">{{ product_category.date_updated|date:'Y-m-d H:i:s' }}</td>
+                            <td class="align-left">
+                                <a href="/product/edit_product_category/?pid={{product_category.id}}"><img src="{% static 'images/edit.png' %}"></a>
+                            </td>                                          
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section><!-- End product Section -->
+    </main><!-- End #main -->
+    {% include 'main/pagination.html' with items=product_categorys %}
+{% endblock %}

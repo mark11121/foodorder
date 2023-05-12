@@ -1,0 +1,105 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block title %}
+test
+{% endblock %}
+
+{% block content %}
+
+    <!-- ======= Menu Section ======= -->
+    <section id="menu" class="menu">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-header">
+          <h2>Our Menu</h2>
+          <p>Check Our <span>Yummy Menu</span></p>
+        </div>
+
+        <ul class="nav nav-tabs d-flex justify-content-center" data-aos="fade-up" data-aos-delay="200">
+
+          {% for menu_category in menu_categories %}
+          <li>
+              <h2> 
+                <a href="{{ menu_category.get_absolute_url }}" {% if menu_category.is_active %}class="active"{% endif %}>
+                  &nbsp;&nbsp;&nbsp;{{ menu_category.name }}
+                </a>
+              </h2> 
+          </li><!-- End tab nav item -->
+          {% endfor %} 
+
+ 
+        </ul>
+
+        <div class="tab-content" data-aos="fade-up" data-aos-delay="300">
+
+          <div class="tab-pane fade active show" id="menu-starters">
+
+            <div class="tab-header text-center">
+              <p>Menu</p>
+              <h3>{{ menu_category.name }}&nbsp;&nbsp;&nbsp;{{ menu_category.slug }}</h3>
+            </div>
+
+            {% if menu_items.has_other_pages %}
+            <nav class="blog-pagination">
+              <ul class="justify-content-center">
+                {% if menu_items.has_previous %}
+                  <li><a href="?page=1">First</a></li>
+                  <li><a href="?page={{ menu_items.previous_page_number }}"><</a></li>
+                {% endif %}
+                {% for num in menu_items.paginator.page_range %}
+                  {% if menu_items.number == num %}
+                    <li class="active"><a href="#">{{ num }}</a></li>
+                  {% elif num > menu_items.number|add:'-3' and num < menu_items.number|add:'3' %}
+                    <li><a href="?page={{ num }}">{{ num }}</a></li>
+                  {% endif %}
+                {% endfor %}
+                {% if menu_items.has_next %}
+                  <li><a href="?page={{ menu_items.next_page_number }}">></a></li>
+                  <li><a href="?page={{ menu_items.paginator.num_pages }}">Last</a></li>
+                {% endif %}
+              </ul>
+            </nav>
+            {% endif %}
+            <div class="row gy-5">
+              {% for menu in menu_items %}
+              <div class="col-lg-4 menu-item">
+                <a href="{{ menu.get_absolute_url }}">
+                  <img class="img-fluid" src="{% if menu.image %}{{ menu.image.url }}
+                            {% else %}{% static 'img/no_image.png' %} {% endif %}">
+                </a>
+                <h4>{{menu.menu_category.name}}</h4>
+                <h4>{{ menu.menu_title }} <br></h4>
+                <h4>
+                <a href="/menu/edit_menu/?pid={{menu.id}}"><img src="{% static 'images/edit.png' %}"></a>
+                <a href="/menu/del_menu/?pid={{menu.id}}"><img src="{% static 'images/del.png' %}"></a>
+                </h4>
+                <p class="ingredients">
+                  {{ menu.menu_description | slice:":30" }}
+                  {% if menu.menu_description|length > 30 %}...
+                  <a href="/menu/menu_detail/?pid={{menu.id}}">詳細資料 <i class="bi bi-arrow-right"></i></a>
+                  {% endif %}
+                </p>
+                
+                <p class="price">
+                  ${{ menu.price }}
+                </p>
+              </div><!-- Menu Item -->
+              {% endfor %}
+
+
+            </div>
+
+ 
+  
+          </div><!-- End Starter Menu Content -->
+
+          
+        </div>
+  
+
+ 
+
+      </div>
+    </section><!-- End Menu Section -->
+
+{% endblock %}

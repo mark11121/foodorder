@@ -1,0 +1,15 @@
+{% load static %}
+<h3 class="sidebar-title">最新發表</h3>
+  
+{% for blogitem in blogitems %} 
+<div class="mt-3">
+
+  <div class="post-item mt-3">
+    <img src="{% if blogitem.image %}{{ blogitem.image.url }}{% else %}{% static 'img/contact-bg.jpg' %} {% endif %}" alt="" class="flex-shrink-0">
+    <div>
+      <h4><a href="/blog/blog_detail/?pid={{blogitem.id}}">{{ blogitem.blog_title }}</a></h4>
+      {{ blogitem.blog_created }}
+    </div>
+  </div><!-- End recent post item-->
+</div>  
+{% endfor %}
