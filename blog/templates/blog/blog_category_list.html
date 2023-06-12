@@ -1,0 +1,66 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load bootstrap5 %}
+{% block title %}
+Blog Category List
+{% endblock %}
+{% block head %}
+    {{ block.super }}
+    
+{% endblock %}   
+{% block content %}
+    <main id="main">
+        <!-- ======= Breadcrumbs ======= -->
+        <div class="breadcrumbs d-flex align-items-center" style="background-image: url('/img/contact-header.jpg');">
+            <div class="container position-relative d-flex flex-column align-items-center">
+                <h2>Blog Category List</h2>
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li>Blog Category List</li>
+                </ol>
+            </div>
+        </div><!-- End Breadcrumbs -->
+         
+      
+        <!-- ======= Blog Category Section ======= -->
+        <section>
+            {% url 'blog:blog_category_list' as action_url %}
+            {% include 'main/search.html' with action_url=action_url searchform=searchform %}
+            <div class="d-flex justify-content-between mb-3">         
+                <div class="col text-start text-muted">全部: {{ total_records }} 筆</div>        
+                     <a href="{% url 'blog:add_blog_category' %}" class="btn btn-primary rounded-0 bg-gradient btn-sm" id='add_new'>
+                       <span aria-hidden="true">&plus;</span> 新增Blog類別
+                     </a>
+               </div>
+            </div>       
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover shadow">
+                      <thead class="bg-secondary text-white">
+                        <tr>
+                            <th class="align-left">ID</th>
+                            <th class="align-left">Name</th>
+                            <th>修改</th>
+                            <th>刪除</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for blog_category in blog_categorys %}
+                        <tr>
+                            <td class="align-left">{{ blog_category.id }}</td>
+                            <td class="align-left">{{ blog_category.name }}</td>
+
+                            <td class="align-left">
+                                <a href="/blog/edit_blog_category/?pid={{blog_category.id}}"><img src="{% static 'images/edit.png' %}"></a>
+                            </td>       
+                            <td class="align-left">
+                                <a href="/blog/delete_blog_category/?pid={{blog_category.id}}"><img src="{% static 'images/del.png' %}"></a>
+                            </td>                                          
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section><!-- End Blog Category Section -->
+    </main><!-- End #main -->
+    {% include 'main/pagination.html' with items=photo_categorys %}
+{% endblock %}

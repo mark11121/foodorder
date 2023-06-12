@@ -37,6 +37,7 @@ Customers
         <table class="table table-bordered table-hover shadow">
           <thead class="bg-secondary text-white">
             <tr>
+              <th class="align-left">id</th> 
               <th class="align-left">Code</th>                
               <th class="align-left">First Name</th>
               <th class="align-left">Last Name</th>
@@ -49,11 +50,14 @@ Customers
               <th class="align-left">Job Title</th>
               <th class="align-left">Notes</th>
               <th class="align-left"></th>
+              <th>修改</th>
+              <th>刪除</th>
             </tr>
           </thead>
           <tbody>
             {% for customer in customers %}
             <tr>
+              <td class="align-left">{{ customer.id }}</td>
               <td class="align-left">{{ customer.customer_code }}</td>
               <td class="align-left">{{ customer.first_name }}</td>
               <td class="align-left">{{ customer.last_name }}</td>
@@ -70,6 +74,13 @@ Customers
                   <span aria-hidden="true">&plus;</span> 新增銷單
                </a>
               </td>
+              <td class="align-left">
+                <a href="{% url 'accounts:edit_customer' customer.id %}"><img src="{% static 'images/edit.png' %}"></a>
+              </td>
+              <td class="align-left">
+                <a href="/accounts/delete_customer/?pid={{customer.id}}"><img src="{% static 'images/del.png' %}"></a>
+              </td> 
+
             </tr>
             <tr>
               <td></td>
@@ -84,6 +95,7 @@ Customers
                   </tr>
                 </table>               
               </td>
+ 
             </tr>
             {% endfor %}
           </tbody>

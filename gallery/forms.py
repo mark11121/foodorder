@@ -32,35 +32,6 @@ class PhotoForm(forms.ModelForm):
         }        
 
 
-        
-class Search_Photo_Category_Form(forms.ModelForm):
-    name = forms.CharField(required=False, label='類別')
-
-    class Meta:
-        model = Photo
-        fields = ['name']
-        widgets = {
-            'name': forms.TextInput(),
-
-        }
-
-    
-
-class Search_Photo_Form(forms.ModelForm):
-    photo_category = forms.CharField(required=False, label='類別')
-    title          = forms.CharField(required=False, label='標題')
-    description    = forms.CharField(required=False, label='說明')
-
-
-    class Meta:
-        model = Photo
-        fields = ['photo_category', 'title', 'description']
-        widgets = {
-            'photo_category': forms.TextInput(),
-            'title': forms.TextInput(),
-            'description': forms.Textarea(),
-        }
-
 
 
    

@@ -1,0 +1,80 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load bootstrap5 %}
+{% block title %}
+Blog List
+{% endblock %}
+{% block head %}
+    {{ block.super }}
+    
+{% endblock %}   
+{% block content %}
+    <main id="main">
+        <!-- ======= Breadcrumbs ======= -->
+        <div class="breadcrumbs d-flex align-items-center" style="background-image: url('/img/contact-header.jpg');">
+            <div class="container position-relative d-flex flex-column align-items-center">
+                <h2>Blog List</h2>
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li>Blog List</li>
+                </ol>
+            </div>
+        </div><!-- End Breadcrumbs -->
+         
+ 
+        <!-- ======= Blog Section ======= -->
+        <section>
+            {% url 'blog:blog_list' as action_url %}
+            {% include 'main/search.html' with action_url=action_url searchform=searchform %}            
+            
+            <div class="d-flex justify-content-between mb-3">         
+                <div class="col text-start text-muted">全部: {{ total_records }} 筆</div>        
+                     <a href="{% url 'blog:add_blog' %}" class="btn btn-primary rounded-0 bg-gradient btn-sm" id='add_new'>
+                        <span aria-hidden="true">&plus;</span> 新增Blog
+                      </a>
+               </div>
+            </div>       
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover shadow">
+                      <thead class="bg-secondary text-white">
+                        <tr>
+                            <th class="align-left">ID</th>
+                            <th class="align-left">類別</th>
+                            <th class="align-left">標題</th>
+                            <th class="align-left">內文</th>
+                            <th class="align-left">作者</th>
+                            <th class="align-left">發文時間</th>
+                            <th class="align-left">讚數</th>
+                            <th class="align-left">倒讚數</th>
+
+                            <th>修改</th>
+                            <th>刪除</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for blog in blogs %}
+                        <tr>
+                            <td class="align-left">{{ blog.id }}</td>
+                            <td class="align-left">{{ blog.blog_category.name }}</td>
+                            <td class="align-left">{{ blog.blog_title }}</td>
+                            <td class="align-left" style="max-width:300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ blog.blog_content }}</td>
+                            <td class="align-left">{{ blog.blog_user }}</td>
+                            <td class="align-left">{{ blog.blog_created }}</td>
+                            <td class="align-left">{{ blog.blog_likes }}</td>
+                            <td class="align-left">{{ blog.blog_hates }}</td>
+
+                            <td class="align-left">
+                                <a href="{% url 'blog:edit_blog' blog.id %}"><img src="{% static 'images/edit.png' %}"></a>
+                            </td>   
+                            <td class="align-left">
+                                <a href="/blog/delete_blog/?pid={{blog.id}}"><img src="{% static 'images/del.png' %}"></a>
+                            </td>                                        
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section><!-- End blog Section -->
+    </main><!-- End #main -->
+    {% include 'main/pagination.html' with items=blogs %}
+{% endblock %}

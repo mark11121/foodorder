@@ -12,7 +12,7 @@ test
     <div class="breadcrumbs d-flex align-items-center" style="background-image: url('/img/contact-header.jpg');">
       <div class="container position-relative d-flex flex-column align-items-center">
 
-        <h2>登入</h2>
+        <h2>員工登入</h2>
         <ol>
           <li><a href="/">Home</a></li>
           <li>登入</li>
@@ -36,13 +36,13 @@ test
                 {% csrf_token %}
                 {% bootstrap_form form %}
                 {% if request.GET.next %}
-                <input type="hidden" name="next" value="/portfolio/">
+                <input type="hidden" name="next" value="/product/product/">
                 {% endif %}
                 <input type="submit" value="登入" class="btn btn-success" />
                </div>
             </form>
             <br>
-            <p>加入會員嗎? <a href="{% url 'accounts:signup' %}" ><u>按我加入</u></a></p>
+            <p>加入會員嗎? <a href="{% url 'accounts:signup_new' %}" ><u>按我加入</u></a></p>
           </div><!-- End Contact Form -->
           
         </div>

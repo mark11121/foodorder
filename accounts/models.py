@@ -30,9 +30,10 @@ class Customer(models.Model):
     cellphone = models.CharField(max_length=50)
     birthdate = models.DateField(verbose_name="出生日期")
     address = models.CharField(max_length=100)
-    email = models.EmailField()
-    company = models.CharField(max_length=100)
-    job_title = models.CharField(max_length=100)
+    email = models.EmailField(max_length=100, unique=True)
+    password = models.CharField(max_length=100)
+    company = models.CharField(max_length=100, blank=True)
+    job_title = models.CharField(max_length=100 ,blank=True)
     notes = models.TextField(blank=True)
 
     # Billing information

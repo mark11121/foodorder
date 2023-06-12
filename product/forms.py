@@ -1,8 +1,6 @@
 from django import forms
-from django_select2.forms import ModelSelect2Widget
-from django_select2.forms import Select2Widget
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm, UserChangeForm
-from product.models import Product_category, Product, Invoice
+from product.models import *
 from accounts.models import Customer
 
 
@@ -22,11 +20,11 @@ class ProductForm(forms.ModelForm):
     
     class Meta:
         model = Product
-        fields = ['product_category', 'code', 'name', 'description', 'user_created', 'price', 'status', 'image']
+        fields = ['product_category',  'name', 'description', 'user_created', 'price', 'status', 'image']
 
         labels = {
             'product_category': '產品類別',
-            'code': '產品編號',
+            
             'name': '產品名稱',
             'description': '產品說明',
             'user_created':'建單人',
@@ -67,13 +65,16 @@ class Product_Sales_Form(forms.ModelForm):
             'transaction': forms.TextInput(),
         }
         
-class Search_Product_Category_Form(forms.ModelForm):
-    name = forms.CharField(required=False, label='類別')
+        
 
+
+class CheckoutForm(forms.ModelForm):
     class Meta:
-        model = Product_category
-        fields = ['name']
-        widgets = {
-            'name': forms.TextInput(),
-
-        }
+        model = Product_sales
+        fields = ['customer_code', 
+                  'first_name', 
+                  'last_name', 
+                  'cellphone', 
+                  'email', 
+                  'address'
+                  ]

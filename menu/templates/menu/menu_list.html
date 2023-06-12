@@ -1,0 +1,78 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load bootstrap5 %}
+{% block title %}
+Menu List
+{% endblock %}
+{% block head %}
+    {{ block.super }}
+    
+{% endblock %}   
+{% block content %}
+    <main id="main">
+        <!-- ======= Breadcrumbs ======= -->
+        <div class="breadcrumbs d-flex align-items-center" style="background-image: url('/img/contact-header.jpg');">
+            <div class="container position-relative d-flex flex-column align-items-center">
+                <h2>Menu List</h2>
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li>Menu List</li>
+                </ol>
+            </div>
+        </div><!-- End Breadcrumbs -->
+         
+ 
+        <!-- ======= Menu Section ======= -->
+        <section>
+            {% url 'menu:menu_list' as action_url %}
+            {% include 'main/search.html' with action_url=action_url searchform=searchform %}            
+            
+            <div class="d-flex justify-content-between mb-3">         
+                <div class="col text-start text-muted">全部: {{ total_records }} 筆</div>        
+                     <a href="{% url 'menu:add_menu_item' %}" class="btn btn-primary rounded-0 bg-gradient btn-sm" id='add_new'>
+                        <span aria-hidden="true">&plus;</span> 新增菜單
+                      </a>
+               </div>
+            </div>       
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover shadow">
+                      <thead class="bg-secondary text-white">
+                        <tr>
+                            <th class="align-left">ID</th>
+                            <th class="align-left">類別</th>
+                            <th class="align-left">標題</th>
+                            <th class="align-left">說明</th>
+                            <th class="align-left">價格</th>
+                            <th class="align-left">建立者</th>
+                            <th class="align-left">建立時間</th>
+
+                            <th>修改</th>
+                            <th>刪除</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for menu in menu_items %}
+                        <tr>
+                            <td class="align-left">{{ menu.id }}</td>
+                            <td class="align-left">{{ menu.menu_category.name }}</td>
+                            <td class="align-left">{{ menu.menu_title }}</td>
+                            <td class="align-left">{{ menu.menu_description }}</td>
+                            <td class="align-left">{{ menu.price }}</td>
+                            <td class="align-left">{{ menu.menu_created_user }}</td>
+                            <td class="align-left">{{ menu.menu_created }}</td>
+
+                            <td class="align-left">
+                                <a href="{% url 'menu:edit_menu' menu.id %}"><img src="{% static 'images/edit.png' %}"></a>
+                            </td>   
+                            <td class="align-left">
+                                <a href="/menu/del_menu/?pid={{menu.id}}"><img src="{% static 'images/del.png' %}"></a>
+                            </td>                                        
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section><!-- End menu Section -->
+    </main><!-- End #main -->
+    {% include 'main/pagination.html' with items=menu_items %}
+{% endblock %}

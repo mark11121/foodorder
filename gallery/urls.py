@@ -7,9 +7,9 @@ urlpatterns = [
 
     path('gallery/', photo_gallery, name='photo_gallery'),
     path('add_photo/', add_photo,name='add_photo'),    
-    path('edit_photo/',edit_photo , name='edit_photo'), 
+    path('edit_photo/<str:pid>',edit_photo , name='edit_photo'), 
     path('photo_list/',photo_list , name='photo_list'),
-    path('save_edit_photo/',save_edit_photo , name='save_edit_photo'), 
+    #path('save_edit_photo/',save_edit_photo , name='save_edit_photo'), 
     path('delete_photo/',delete_photo , name='delete_photo'), 
 
     path('add_photo_category/', add_photo_category,name='add_photo_category'), 

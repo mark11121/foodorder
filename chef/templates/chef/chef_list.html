@@ -43,7 +43,8 @@
                             <th class="align-left">廚師頭銜</th>
                             <th class="align-left">廚師介紹</th>
 
-                            <th></th>
+                            <th>修改</th>
+                            <th>刪除</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -55,8 +56,11 @@
                             <td class="align-left">{{ chef.chef_profile }}</td>
 
                             <td class="align-left">
-                                <a href="/chef/edit_chef/?pid={{chef.id}}"><img src="{% static 'images/edit.png' %}"></a>
-                            </td>                                          
+                                <a href="{% url 'chef:edit_chef' chef.id %}"><img src="{% static 'images/edit.png' %}"></a>
+                            </td>
+                            <td class="align-left">
+                                <a href="/chef/delete_chef/?pid={{chef.id}}"><img src="{% static 'images/del.png' %}"></a>
+                            </td>  
                         </tr>
                         {% endfor %}
                     </tbody>

@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-test
+About Us
 {% endblock %}
 
 {% block content %}
@@ -11,30 +11,33 @@ test
     <div class="container" data-aos="fade-up">
 
       <div class="section-header">
+<br>
         <h2>About Us</h2>
-        <p>Learn More <span>About Us</span></p>
+        <p>關於<span>我們</span></p>
       </div>
 
       <div class="row gy-4">
         <div class="col-lg-7 position-relative about-img" style="background-image: url(../static/assets/img/about.jpg) ;" data-aos="fade-up" data-aos-delay="150">
           <div class="call-us position-absolute">
-            <p>+1 5589 55488 55</p>
+            <p>+886 123 321 789</p>
           </div>
         </div>
         <div class="col-lg-5 d-flex align-items-end" data-aos="fade-up" data-aos-delay="300">
           <div class="content ps-0 ps-lg-5">
             <p class="fst-italic">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-              magna aliqua.
+              余致力國民革命，凡四十年，其目的在求中國之自由平等。積四十年之經驗，深知欲達到此目的，必須喚起民眾及聯合世界上以平等待我之民族，共同奮鬥。
+              現在革命尚未成功，凡我同志，務須依照余所著《建國方略》、《建國大綱》、《三民主義》及《第一次全國代表大會宣言》，繼續努力，以求貫徹。最近主張開國民會議及廢除不平等條約，尤須於最短期間，促其實現。是所至囑！[4]
+              
+              孫文 三月十一日補簽
+              民國十四年二月二十四日
             </p>
             <ul>
-              <li><i class="bi bi-check2-all"></i> Ullamco laboris nisi ut aliquip ex ea commodo consequat.</li>
-              <li><i class="bi bi-check2-all"></i> Duis aute irure dolor in reprehenderit in voluptate velit.</li>
-              <li><i class="bi bi-check2-all"></i> Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate trideta storacalaperda mastiro dolore eu fugiat nulla pariatur.</li>
+              <li><i class="bi bi-check2-all"></i>好吃好喝好玩的都在Yummy123</li>
+              <li><i class="bi bi-check2-all"></i>營養健康的食材都在Yummy123</li>
+              <li><i class="bi bi-check2-all"></i>Yummy123都在Yummy123</li>
             </ul>
             <p>
-              Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-              velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident
+
             </p>
 
             <div class="position-relative mt-4">
@@ -47,6 +50,41 @@ test
 
     </div>
   </section><!-- End About Section -->
+     <!-- ======= Chefs Section ======= -->
+     <section id="chefs" class="chefs section-bg">
+      <div class="container" data-aos="fade-up">
+        <div class="section-header">
+          <h2>Our Chefs</h2>
+          <p>最優秀<span>廚師</span>團隊</p>
+        </div>
 
+        <div class="row gy-4">
+
+          {% for chef in chefs %}
+          <div class="col-lg-4 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="{{ chef.delay }}">
+            <div class="chef-member">
+              <div class="member-img">
+                <img src="{% if chef.chef_img %}{{ chef.chef_img.url }}
+                {% else %}{% static 'img/no_image.png' %}{% endif %}" class="img-fluid" alt="">
+                <div class="social">
+                  <a href=""><i class="bi bi-twitter"></i></a>
+                  <a href=""><i class="bi bi-facebook"></i></a>
+                  <a href=""><i class="bi bi-instagram"></i></a>
+                  <a href=""><i class="bi bi-linkedin"></i></a>
+                </div>
+              </div>
+              <div class="member-info">
+                <h4>{{ chef.chef_name }}</h4>
+                <span>{{ chef.chef_title }}</span>
+                <p>{{ chef.chef_profile }}</p>
+              </div>
+            </div>
+          </div><!-- End Chefs Member -->
+          {% endfor %}
+
+        </div>
+
+      </div>
+    </section><!-- End Chefs Section -->
 
 {% endblock %}

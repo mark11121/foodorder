@@ -5,6 +5,7 @@ from menu.models import Menu_category,Menu_item,Comment_item
 from menu.form import MenuForm,MenuCategoryForm,CommentForm
 from django.shortcuts import render
 from django.core.paginator import Paginator
+from main.form import SearchForm
 
 # Create your views here.
 
@@ -60,16 +61,34 @@ def add_menu_item(request):
 
     return render(request, 'menu/add_menu_item.html', {'form': form})
 
-def edit_menu(request):
-    # if this is a POST request we need to process the form data
-      #兩種get取值方法都可以
-    pid  = request.GET.get('pid')
-    recd = Menu_item.objects.get(id=pid)    
-    form = MenuForm(instance=recd)
-    return render(request,
-                  'menu/edit_menu.html',
-                  {'pid':pid,
-                   'form': form})
+
+def edit_menu(request, pid):
+    menu = Menu_item.objects.get(id=pid)
+    menu_categories = Menu_category.objects.all()    
+
+    if request.method == 'POST':
+        if len(request.FILES) !=0:
+            if menu.image and len(menu.image) > 0:
+                os.remove(menu.image.path)
+            menu.image = request.FILES['image']
+
+        # Check if delete_image checkbox is selected
+        if 'delete_image' in request.POST:
+            if len(menu.image) > 0:
+                os.remove(menu.image.path)
+            menu.image = None
+
+        menu_category = get_object_or_404(Menu_category, id=request.POST.get('menu_category'))
+        menu.menu_category = menu_category
+        menu.menu_title          = request.POST.get('menu_title')
+        menu.menu_description    = request.POST.get('menu_description')
+        menu.price               = request.POST.get('price')
+        menu.save()
+        return HttpResponseRedirect('/menu/menu_list/')
+
+    context = {'menu':menu,
+               'menu_categories': menu_categories,}
+    return render(request,'menu/edit_menu.html',context)
 
 
 def del_menu(request):
@@ -82,7 +101,7 @@ def del_menu(request):
        os.remove(res.image.path)
     res.delete()
     
-    return HttpResponseRedirect('/menu/menu/')
+    return HttpResponseRedirect('/menu/menu_list')
 
 def save_edit_menu(request):
    pid  = request.POST['pid']
@@ -106,6 +125,20 @@ def save_edit_menu(request):
         return HttpResponseRedirect('/menu/'+category_slug)
 
 
+def menu_detail(request):
+   
+    pid = request.GET.get('pid')
+    #myid = request.GET['myid']
+     
+    menu_item = Menu_item.objects.get(id=pid)
+    
+    return render(request, 'menu/menu-details.html', {
+                                                    'menu_item': menu_item ,
+                                                     })
+
+
+
+
 
 #category
 
@@ -120,7 +153,7 @@ def add_menu_category(request):
             # process the data in form.cleaned_data as required
             form.save()
             # redirect to a new URL:
-            return HttpResponseRedirect('/menu/menu/')
+            return HttpResponseRedirect('/menu/menu_category_list')
 
         else:
             return HttpResponseRedirect('/menu/add_menu_category/')
@@ -158,13 +191,157 @@ def save_edit_menu_category(request):
             #category_recd=menu_category.objects.get(id=menu_item_category_id)
            
             # redirect to the detail page of the `Band` we just updated
-            return HttpResponseRedirect('/menu/add_menu_category/')
+            return HttpResponseRedirect('/menu/menu_category_list')
        
        else:
             items='error'
             return render(request, 'show_test.html', locals()) 
    else:
         return HttpResponseRedirect('/menu/add_menu_category/')
+
+
+def del_menu_category(request):
+    #兩種get取值方法都可以
+    pid = request.GET.get('pid')
+    #myid = request.GET['myid']
+     
+    res = Menu_category.objects.get(id=pid)
+    
+    res.delete()
+    
+    return HttpResponseRedirect('/menu/menu_category_list')
+
+
+
+# First searchform is defined inside the POST block with data=request.POST.
+# Second searchform is defined inside the same POST block after the search has been done with initial_data=request.GET.
+# Third searchform is defined outside of the POST block with initial_data=request.GET.
+# Each searchform definition is used for a different purpose:
+
+# The first searchform is used to process the POST data and validate it.
+# The second searchform is used to generate a new search form with the original search query data.
+# The third searchform is used to generate the initial search form with the initial GET data.
+
+def menu_list(request):
+    menu_list = Menu_item.objects.all()
+    paginator = Paginator(menu_list, 6)  # 6 rows per page
+    page = request.GET.get('page')
+    menu_items = paginator.get_page(page)
+    total_records = paginator.count
+
+    
+
+    searchform_params = {
+        'model': Menu_item,
+        'fields': ['menu_category', 'menu_title', 'menu_description','price','menu_created_user','menu_created'],
+        'label_suffixes': {
+            'menu_category': '類別',
+            'menu_title': '標題',
+            'menu_description': '說明',
+            'price': '價格',
+            'menu_created_user': '建立者',
+            'menu_created': '建立時間',
+
+        }
+        ,'category_fields': ['menu_category'],  # 傳遞相應的類別欄位
+    }
+
+    if request.method == 'POST':
+        searchform = SearchForm(
+            data=request.POST,
+            **searchform_params
+        )
+
+        if searchform.is_valid():
+            search_params = {}
+            for field_name in searchform_params['fields']:
+                field_value = searchform.cleaned_data.get(field_name)
+                if field_name in searchform_params['category_fields']:
+                    if field_value:
+                        search_params[field_name + '__name__icontains'] = field_value
+                else:
+                    if field_value:
+                        search_params[field_name + '__icontains'] = field_value
+
+            menu_list = Menu_item.objects.filter(**search_params)
+            paginator = Paginator(menu_list, 6)
+            menu_items = paginator.get_page(1)  # start at page 1 when initiating new search
+            total_records = paginator.count
+
+    else:
+        searchform = SearchForm(
+            initial_data=request.GET,
+            **searchform_params
+        )
+
+    context = {
+        'menu_items': menu_items,
+        'searchform': searchform,
+        'total_records':total_records,
+        'searchform_params': searchform_params,  # 添加 searchform_params 到上下文
+    }
+
+
+    return render(request, 'menu/menu_list.html', context)
+
+
+
+def menu_category_list(request):
+
+    menu_category_list = Menu_category.objects.all()
+    paginator = Paginator(menu_category_list, 6)  # 6 rows per page
+    page = request.GET.get('page')
+    menu_categorys = paginator.get_page(page)
+    total_records = paginator.count
+
+
+    searchform_params = {
+        'model': Menu_category,
+        'fields': ['name'],
+        'label_suffixes': {
+            'name': '類別',
+        }
+        ,'category_fields': []  # 添加空列表作为类别字段
+    }
+
+    if request.method == 'POST':
+        searchform = SearchForm(
+            data=request.POST,
+            **searchform_params
+        )
+
+        if searchform.is_valid():
+            search_params = {}
+            for field_name in searchform_params['fields']:
+                field_value = searchform.cleaned_data.get(field_name)
+                if field_name in searchform_params['category_fields']:
+                    if field_value:
+                        search_params[field_name + '__name__icontains'] = field_value
+                else:
+                    if field_value:
+                        search_params[field_name + '__icontains'] = field_value
+
+            menu_category_list = Menu_category.objects.filter(**search_params)
+            paginator = Paginator(menu_category_list, 6)
+            menu_categorys = paginator.get_page(1)  # start at page 1 when initiating new search
+            total_records = paginator.count
+
+    else:
+        searchform = SearchForm(
+            initial_data=request.GET,
+            **searchform_params
+        )
+
+    context = {
+        'menu_categorys': menu_categorys,
+        'searchform': searchform,
+        'total_records':total_records,
+        'searchform_params': searchform_params,  # 添加 searchform_params 到上下文
+    }
+
+    return render(request, 'menu/menu_category_list.html',context)
+
+
 
 
 
@@ -196,36 +373,6 @@ def post_comment(request):
 
     return HttpResponseRedirect(ret_addr)
 
-def save_menu(request):
-   
-   form = MenuForm(request.POST,  request.FILES)
-   
-   if request.method=='POST':
-       if form.is_valid():
-            form.save()
-            # redirect to the detail page of the `Band` we just updated
-            return HttpResponseRedirect('/menu/menu')
-       else:
-            items='error'
-            return render(request, 'show_test.html', locals()) 
-   else:
-        return HttpResponseRedirect('/menu/menu')
-
-
-def del_menu_category(request):
-    #兩種get取值方法都可以
-    pid = request.GET.get('pid')
-    #myid = request.GET['myid']
-     
-    res = Menu_category.objects.get(id=pid)
-    
-    res.delete()
-    
-    return HttpResponseRedirect('/menu/add_menu_category')
-
-
-
-
 
 def del_comment(request,):
     #兩種get取值方法都可以
@@ -251,16 +398,7 @@ def press_like(request,):
      
     return HttpResponseRedirect(ret_addr)
 
-def menu_detail(request):
-   
-    pid = request.GET.get('pid')
-    #myid = request.GET['myid']
-     
-    menu_item = Menu_item.objects.get(id=pid)
-    
-    return render(request, 'menu/menu-details.html', {
-                                                    'menu_item': menu_item ,
-                                                     })
+
 
 def search_title(request):
     q_title = request.POST['q_title']

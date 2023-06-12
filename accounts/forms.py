@@ -57,6 +57,26 @@ class add_ProfileForm(forms.ModelForm):
 
 
 
+class CustomerLoginForm(forms.Form):
+    email = forms.EmailField(label='Email')
+    password = forms.CharField(widget=forms.PasswordInput, label='密碼')
+
+    def __init__(self, request=None, *args, **kwargs):
+        self.request = request
+        super().__init__(*args, **kwargs)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        email = cleaned_data.get('email')
+        password = cleaned_data.get('password')
+
+        # 进行你的验证逻辑，例如验证email和password是否匹配某个客户账户
+        # 如果验证失败，可以使用下面的代码抛出验证错误：
+        # raise forms.ValidationError('Invalid email or password')
+
+        return cleaned_data
+
+
 class CustomerForm(forms.ModelForm):
     PAYMENT_METHOD_CHOICES = [
         ('credit_card', 'Credit Card'),
@@ -68,7 +88,8 @@ class CustomerForm(forms.ModelForm):
     gender_choices = [('M', 'Male'), ('F', 'Female'), ('O', 'Other')]
     first_name = forms.CharField(max_length=100, label='名字', required=True)
     last_name = forms.CharField(max_length=100, label='姓氏', required=True)
-    email = forms.EmailField(label='Email', required=False)
+    email = forms.EmailField(max_length=100, label='Email', required=True)
+    password = forms.CharField(max_length=100, label='密碼', required=True)
     gender = forms.ChoiceField(choices=gender_choices, widget=forms.Select, label='性别', required=False)
     
     cellphone = forms.CharField(max_length=50, label='手機', required=False)
@@ -89,7 +110,7 @@ class CustomerForm(forms.ModelForm):
 
     class Meta:
         model = Customer
-        fields = ['customer_code','first_name', 'last_name', 'email', 'gender',
+        fields = ['customer_code','first_name', 'last_name', 'email', 'password', 'gender',
                   'cellphone', 'birthdate', 'address', 'company',
                   'job_title','notes','payment_method', 'use_billing_address',
                   'billing_address', 'card_number', 'card_expiration_date', 'card_cvv']

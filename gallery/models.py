@@ -1,5 +1,6 @@
 from django.db import models
 import os
+
 # Create your models here.
 
 class Photo_category(models.Model):
@@ -25,7 +26,7 @@ class Photo(models.Model):
     photo_category = models.ForeignKey(Photo_category,on_delete=models.CASCADE, null=True, blank=True, related_name='photo')
     title          = models.CharField(max_length=200)
     description    = models.TextField(null=True, blank=True)
-    image          = models.ImageField(upload_to=photo_image_upload_path)
+    image          = models.ImageField(upload_to=photo_image_upload_path, null=True, blank=True)
 
     def __str__(self):
         return self.title

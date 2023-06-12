@@ -19,36 +19,45 @@ def chef(request):
                   {'chefs': chefs})
 
 def add_chef(request):
-    # if this is a POST request we need to process the form data
     if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
         form = ChefForm(request.POST, request.FILES)
-        # check whether it's valid:
         if form.is_valid():
-            # process the data in form.cleaned_data as required
             form.save()
             return HttpResponseRedirect('/chef/chef/')
         else:
             items='error'
             return render(request, 'show_test.html', locals()) 
-    # if a GET (or any other method) we'll create a blank form
     else:
         form = ChefForm()
-
     return render(request, 'chef/add_chef.html', {'form': form})
 
-def edit_chef(request):
-    # if this is a POST request we need to process the form data
-      #兩種get取值方法都可以
-    pid  = request.GET.get('pid')
-    recd = Chef.objects.get(id=pid)    
-    form = ChefForm(instance=recd)
-    return render(request,
-                  'chef/edit_chef.html',
-                  {'pid':pid,
-                   'form': form})
 
-def del_chef(request):
+def edit_chef(request, pid):
+    chef = Chef.objects.get(id=pid)
+
+    if request.method == 'POST':
+        if len(request.FILES) !=0:
+            if chef.chef_img and len(chef.chef_img) > 0:
+                os.remove(chef.chef_img.path)
+            chef.chef_img = request.FILES['chef_img']
+
+        # Check if delete_image checkbox is selected
+        if 'delete_image' in request.POST:
+            if len(chef.chef_img) > 0:
+                os.remove(chef.chef_img.path)
+            chef.chef_img = None
+
+        chef.chef_name      = request.POST.get('chef_name')
+        chef.chef_title     = request.POST.get('chef_title')
+        chef.chef_profile   = request.POST.get('chef_profile')
+        chef.save()
+        return HttpResponseRedirect('/chef/chef_list/')
+
+    context = {'chef':chef}
+    return render(request,'chef/edit_chef.html',context)
+
+
+def delete_chef(request):
     #兩種get取值方法都可以
     pid = request.GET.get('pid')
     #myid = request.GET['myid']
@@ -60,6 +69,7 @@ def del_chef(request):
     
     return HttpResponseRedirect('/chef/chef')
 
+'''
 def save_edit_chef(request):
    pid=request.POST['pid']
    recd = Chef.objects.get(id=pid)
@@ -77,10 +87,10 @@ def save_edit_chef(request):
        
        else:
             items='error'
-            return render(request, 'show_test.html', locals()) 
+            return render(request, 'chef/chefs.html') 
    else:
         return HttpResponseRedirect('/chef/chef')
-   
+'''
 
 # First searchform is defined inside the POST block with data=request.POST.
 # Second searchform is defined inside the same POST block after the search has been done with initial_data=request.GET.
@@ -107,6 +117,7 @@ def chef_list(request):
             'chef_profile': '廚師介紹',
 
         }
+        ,'category_fields': []  # 添加空列表作为类别字段
     }
 
     if request.method == 'POST':
@@ -116,15 +127,20 @@ def chef_list(request):
         )
 
         if searchform.is_valid():
-            chef_list = searchform.search()
+            search_params = {}
+            for field_name in searchform_params['fields']:
+                field_value = searchform.cleaned_data.get(field_name)
+                if field_name in searchform_params['category_fields']:
+                    if field_value:
+                        search_params[field_name + '__name__icontains'] = field_value
+                else:
+                    if field_value:
+                        search_params[field_name + '__icontains'] = field_value
+
+            chef_list = Chef.objects.filter(**search_params)
             paginator = Paginator(chef_list, 6)
             chefs = paginator.get_page(1)  # start at page 1 when initiating new search
             total_records = paginator.count
-
-        searchform = SearchForm(
-            initial_data=request.GET,
-            **searchform_params
-        )
 
     else:
         searchform = SearchForm(
@@ -136,6 +152,7 @@ def chef_list(request):
         'chefs': chefs,
         'searchform': searchform,
         'total_records':total_records,
+        'searchform_params': searchform_params,  # 添加 searchform_params 到上下文
     }
 
     return render(request, 'chef/chef_list.html', context)

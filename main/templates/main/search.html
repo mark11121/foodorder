@@ -48,14 +48,41 @@
   <div class="col-lg-6 mx-auto" data-aos="fade-up" data-aos-delay="250">
   <!-- Content to show/hide goes here -->
   <form action="{{ action_url }}" method="POST" enctype="multipart/form-data">
-      {% csrf_token %}
-         <div class="form-group">
-             <div class="form-group col-md-12">
-                 {% bootstrap_form searchform %}
-                 <input class="btn btn-success" type="submit" value="送出" />
+    {% csrf_token %}
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-3">
+          {% for field_name, label in searchform_params.label_suffixes.items %}
+            {% if field_name in searchform.fields %}
+              <div class="form-group">
+                <label for="" class="form-label">{{ label }}</label>
+                <select name="select_{{ field_name }}" class="form-select">
+                  <option value=""></option>
+                  <option value="NOT">排除</option>
+                  <option value="%">任意搜尋</option>
+                  <option value='=" "'>=空白</option>
+                  <option value='!=" "'>!=空白</option>
+                  <!-- 添加其他類別選項 -->
+                </select>
               </div>
-         </div>
- </form>
+            {% endif %}
+          {% endfor %}
+        </div>
+        <div class="col-md-9">
+          {% for field_name, label in searchform_params.label_suffixes.items %}
+            {% if field_name in searchform.fields %}
+              <div class="form-group">
+                <label for="" class="form-label">{{ label }}</label>
+                <input type="text" name="{{ field_name }}" value="{{ searchform.field.value }}" class="form-control">
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+      <input class="btn btn-success" type="submit" value="送出" />
+    </div>
+  </form>
+
    
   </div>
 </div>

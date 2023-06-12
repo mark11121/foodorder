@@ -36,32 +36,57 @@ test
               </div>
             </div><!-- End Info Item -->
 
-            <div class="info-item d-flex">
-              <i class="bi bi-envelope flex-shrink-0"></i>
-              <div>
-                <h4>Email:</h4>
-                <p>info@example.com</p>
-              </div>
-            </div><!-- End Info Item -->
-
-            <div class="info-item d-flex">
-              <i class="bi bi-phone flex-shrink-0"></i>
-              <div>
-                <h4>Call:</h4>
-                <p>+1 5589 55488 55</p>
-              </div>
-            </div><!-- End Info Item -->
 
           </div>
 
           <div class="col-lg-6" data-aos="fade-up" data-aos-delay="250">
 
-            <form action="/product/save_edit_product/" method="POST" enctype="multipart/form-data">
+            <form action="" method="POST" enctype="multipart/form-data">
               {% csrf_token %}
-              {% bootstrap_form form %}
-              <input type="hidden"  name="pid" value="{{pid}}" />
-              <input type="submit" value="Submit">
-             </form>
+              <div class="mb-3">
+                <label for="" class="form-label">product category</label>
+                <select name="product_category" id="id_product_category" class="form-select">
+                  {% for category in product_categories %}
+                      <option value="{{ category.id }}" {% if category.id == product.product_category.id %}selected{% endif %}>{{ category.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="" class="form-label">name</label> 
+                <input type="text" Required name="name" value="{{ product.name }}" class="form-control">
+              </div>
+              <div class="mb-3">
+                <label for="" class="form-label">description</label>
+                <input type="text" name="description" value="{{ product.description }}" class="form-control"> 
+              </div>
+              <div class="mb-3">
+                <label for="" class="form-label">user_created</label>
+                <input type="text" name="user_created" value="{{ product.user_created }}" class="form-control"> 
+              </div>
+              <div class="mb-3">
+                <label for="" class="form-label">status</label>
+                <select name="status" id="id_status" class="form-select">
+                  <option value="1" {% if product.status == '1' %}selected{% endif %}>Active</option>
+                  <option value="2" {% if product.status == '2' %}selected{% endif %}>Inactive</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="" class="form-label">price</label>
+                <input type="text" name="price" value="{{ product.price }}" class="form-control"> 
+              </div>
+              <div class="mb-3">
+                <label for="" class="form-label">Image</label> 
+                {% if product.image %}
+                <div class="mb-3">
+                  <label for="" class="form-label">Delete Image</label> 
+                  <input type="checkbox" name="delete_image" class="form-check-input">
+                </div>
+                {% endif %}
+                <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/no_image.png' %}{% endif %}" alt="image here" class="prod-size">
+                <input type="file" name="image" class="form-control">
+              </div>
+              <button type="submit" class="btn btn-warning">Update</button>
+              </form>
 
           </div><!-- End Contact Form -->
 

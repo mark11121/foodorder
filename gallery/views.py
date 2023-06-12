@@ -4,6 +4,9 @@ from .forms import *
 from main.form import SearchForm
 from django.http import HttpResponseRedirect
 from django.core.paginator import Paginator
+from django.shortcuts import get_object_or_404
+
+
 
 
 def photo_gallery(request):
@@ -12,40 +15,46 @@ def photo_gallery(request):
 
 
 def add_photo(request):
-    # if this is a POST request we need to process the form data
     if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
         form = PhotoForm(request.POST, request.FILES)
-        # check whether it's valid:
         if form.is_valid():
-            # process the data in form.cleaned_data as required
-             
-            form.save()
-          
+            form.save() 
             return HttpResponseRedirect('/gallery/add_photo/')
         else:
             items='error'
             return render(request, 'show_test.html', locals()) 
-        
-    # if a GET (or any other method) we'll create a blank form
     else:
-        
         form = PhotoForm()
-
     return render(request, 'gallery/add_photo.html', {'form': form})
 
 
 
-def edit_photo(request):
-    # if this is a POST request we need to process the form data
-      #兩種get取值方法都可以
-    pid  = request.GET.get('pid')
-    recd = Photo.objects.get(id=pid)    
-    form = PhotoForm(instance=recd)
-    return render(request,
-                  'gallery/edit_photo.html',
-                  {'pid':pid,
-                   'form': form})
+def edit_photo(request, pid):
+    photo = Photo.objects.get(id=pid)
+    photo_categories = Photo_category.objects.all()    
+
+    if request.method == 'POST':
+        if len(request.FILES) !=0:
+            if photo.image and len(photo.image) > 0:
+                os.remove(photo.image.path)
+            photo.image = request.FILES['image']
+
+        # Check if delete_image checkbox is selected
+        if 'delete_image' in request.POST:
+            if len(photo.image) > 0:
+                os.remove(photo.image.path)
+            photo.image = None
+
+        photo_category = get_object_or_404(Photo_category, id=request.POST.get('photo_category'))
+        photo.photo_category = photo_category
+        photo.title          = request.POST.get('title')
+        photo.description    = request.POST.get('description')
+        photo.save()
+        return HttpResponseRedirect('/gallery/photo_list/')
+
+    context = {'photo':photo,
+               'photo_categories': photo_categories,}
+    return render(request,'gallery/edit_photo.html',context)
 
 
 def delete_photo(request):
@@ -54,34 +63,42 @@ def delete_photo(request):
     #myid = request.GET['myid']
      
     recd = Photo.objects.get(id=pid)
-
+    if recd.image and len(recd.image)>= 0:
+       os.remove(recd.image.path)
     recd.delete()
     
     return HttpResponseRedirect('/gallery/photo_list/')
 
 
-
+'''
 def save_edit_photo(request):
-   pid  = request.POST['pid']
-   photos = Photo.objects.get(id=pid)
-   form = PhotoForm(request.POST,  request.FILES, instance=photos)
+    pid  = request.POST['pid']
+    photos = Photo.objects.get(id=pid)
+    form = PhotoForm(request.POST,  request.FILES, instance=photos)
     
-   if request.method=='POST':
-       if form.is_valid():
-            form.save()
-            photos = Photo.objects.get(id=pid)
-            #menu_item_category_id = recd.menu_category_id
-            #category_recd=menu_category.objects.get(id=menu_item_category_id)
-             
-            # redirect to the detail page of the `Band` we just updated
-            return HttpResponseRedirect('/gallery/photo_list/')
-       
-       else:
-            items='error'
-            return render(request, 'show_test.html') 
-   else:
-           return HttpResponseRedirect('/gallery/photo_list/')
+    if request.method=='POST':
+        
+        if 'image-clear' in request.POST:
+            if photos.image and len(photos.image) >= 0:
+               # Remove the image file
+               os.remove(photos.image.path)
+               photos.image = None
+            photos.save()
+            redirect_url = '/gallery/edit_photo/?pid='+pid
+        
+            # Redirect to the constructed URL
+            return HttpResponseRedirect(redirect_url)
 
+        if form.is_valid():
+            form.save()
+
+            return HttpResponseRedirect('/gallery/photo_list/')
+        else:
+            items='error'
+            return render(request, 'gallery/gallery.html') 
+    else:
+           return HttpResponseRedirect('/gallery/photo_list/')
+'''
 
 
 
@@ -98,10 +115,7 @@ def add_photo_category(request):
             # process the data in form.cleaned_data as required
             form.save()
             # redirect to a new URL:
-            searchform = Search_Photo_Category_Form()
-            return render(request, 'gallery/photo_category_list.html', 
-                  {'photo_categorys': photo_categorys,
-                   'searchform': searchform})
+            return HttpResponseRedirect('/gallery/photo_category_list/')
 
         else:
             return HttpResponseRedirect('/gallery/add_photo_category/')
@@ -139,11 +153,8 @@ def save_edit_photo_category(request):
             #category_recd=photo_category.objects.get(id=photo_item_category_id)
            
             # redirect to the detail page of the `Band` we just updated
-            photo_categorys = Photo_category.objects.all()
-            searchform = Search_Photo_Category_Form()
-            return render(request, 'gallery/photo_category_list.html', 
-                  {'photo_categorys': photo_categorys,
-                   'searchform': searchform})
+
+            return HttpResponseRedirect('/gallery/photo_category_list/')
 
        else:
             items='error'
@@ -203,15 +214,20 @@ def photo_list(request):
         )
 
         if searchform.is_valid():
-            photo_list = searchform.search()
+            search_params = {}
+            for field_name in searchform_params['fields']:
+                field_value = searchform.cleaned_data.get(field_name)
+                if field_name in searchform_params['category_fields']:
+                    if field_value:
+                        search_params[field_name + '__name__icontains'] = field_value
+                else:
+                    if field_value:
+                        search_params[field_name + '__icontains'] = field_value
+
+            photo_list = Photo.objects.filter(**search_params)
             paginator = Paginator(photo_list, 6)
             photos = paginator.get_page(1)  # start at page 1 when initiating new search
             total_records = paginator.count
-
-        searchform = SearchForm(
-            initial_data=request.GET,
-            **searchform_params
-        )
 
     else:
         searchform = SearchForm(
@@ -223,6 +239,7 @@ def photo_list(request):
         'photos': photos,
         'searchform': searchform,
         'total_records':total_records,
+        'searchform_params': searchform_params,  # 添加 searchform_params 到上下文
     }
 
 
@@ -243,9 +260,9 @@ def photo_category_list(request):
         'model': Photo_category,
         'fields': ['name'],
         'label_suffixes': {
-            'name': '類別',
+            'name': '類別名稱',
         }
-        #,'category_fields': ['name'],  # 傳遞相應的類別欄位
+        ,'category_fields': []  # 添加空列表作为类别字段
     }
 
     if request.method == 'POST':
@@ -255,15 +272,20 @@ def photo_category_list(request):
         )
 
         if searchform.is_valid():
-            photo_category_list = searchform.search()
+            search_params = {}
+            for field_name in searchform_params['fields']:
+                field_value = searchform.cleaned_data.get(field_name)
+                if field_name in searchform_params['category_fields']:
+                    if field_value:
+                        search_params[field_name + '__name__icontains'] = field_value
+                else:
+                    if field_value:
+                        search_params[field_name + '__icontains'] = field_value
+
+            photo_category_list = Photo_category.objects.filter(**search_params)
             paginator = Paginator(photo_category_list, 6)
             photo_categorys = paginator.get_page(1)  # start at page 1 when initiating new search
             total_records = paginator.count
-
-        searchform = SearchForm(
-            initial_data=request.GET,
-            **searchform_params
-        )
 
     else:
         searchform = SearchForm(
@@ -275,6 +297,7 @@ def photo_category_list(request):
         'photo_categorys': photo_categorys,
         'searchform': searchform,
         'total_records':total_records,
+        'searchform_params': searchform_params,  # 添加 searchform_params 到上下文
     }
 
     return render(request, 'gallery/photo_category_list.html',context)

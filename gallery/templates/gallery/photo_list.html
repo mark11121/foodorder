@@ -56,7 +56,7 @@ photo List
                             <td class="align-left">{{ photo.description }}</td>
 
                             <td class="align-left">
-                                <a href="/gallery/edit_photo/?pid={{photo.id}}"><img src="{% static 'images/edit.png' %}"></a>
+                                <a href="{% url 'gallery:edit_photo' photo.id %}"><img src="{% static 'images/edit.png' %}"></a>
                             </td>   
                             <td class="align-left">
                                 <a href="/gallery/delete_photo/?pid={{photo.id}}"><img src="{% static 'images/del.png' %}"></a>

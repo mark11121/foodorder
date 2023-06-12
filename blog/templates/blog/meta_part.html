@@ -7,7 +7,11 @@
                     {{comments_count}} Comments({{res.blog_comments_count}})
                 </a></li>
                   <li class="d-flex align-items-center">                    
-                    <a href="/blog/press_like/?pid={{res.id}}&ret_addr={{request.get_full_path}}"><img src="{% static 'images/like.png' %}"></a>
-                    {{res.blog_likes}}
+                  <a href="/blog/press_like/?pid={{res.id}}&ret_addr={{request.get_full_path}}"><img src="{% static 'images/like.png' %}"></a>
+                  {{res.blog_likes}}
+                 <li> 
+                  <li class="d-flex align-items-center">                    
+                    <a href="/blog/press_hate/?pid={{res.id}}&ret_addr={{request.get_full_path}}"><img src="{% static 'images/hate.png' %}"></a>
+                  {{res.blog_hates}}
                   <li> 
                 </ul>

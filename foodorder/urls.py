@@ -31,10 +31,12 @@ urlpatterns = [
     path('select2/', include(select2_urls)),
     path('imsApp/', include(('imsApp.urls', 'imsApp'), namespace='imsApp')),    
     path('chef/', include(('chef.urls', 'chef'), namespace='chef')),      
-    path('gallery/', include(('gallery.urls', 'gallery'), namespace='photo_gallery')),                      
+    path('gallery/', include(('gallery.urls', 'gallery'), namespace='photo_gallery')),    
+    path('niceadmin/', include(('niceadmin.urls', 'niceadmin'), namespace='niceadmin')),                   
     #url(r'^orders/', include(('orders.urls', 'orders'), namespace='orders')),
     #url(r'^payment/', include(('payment.urls', 'payment'), namespace='payment')),
     #url(r'^paypal/', include('paypal.standard.ipn.urls')),
+    path('cart/', include(('cart.urls', 'cart'), namespace='cart')),   
 
 ]
 

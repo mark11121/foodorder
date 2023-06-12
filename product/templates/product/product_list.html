@@ -49,7 +49,9 @@
                             <th class="align-left">Date Created</th>
                             <th class="align-left">Date Updated</th>
                             <th class="align-left">By</th>
-                            <th></th>
+
+                            <th>修改</th>
+                            <th>刪除</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -67,8 +69,11 @@
                             <td class="align-left">{{ product.date_updated|date:'Y-m-d H:i:s' }}</td>
                             <td class="align-left">{{ product.user_created }}</td>  
                             <td class="align-left">
-                                <a href="/product/edit_product/?pid={{product.id}}"><img src="{% static 'images/edit.png' %}"></a>
-                            </td>                                          
+                                <a href="{% url 'product:edit_product' product.id %}"><img src="{% static 'images/edit.png' %}"></a>
+                            </td>     
+                            <td class="align-left">
+                                <a href="/product/delete_product/?pid={{product.id}}"><img src="{% static 'images/del.png' %}"></a>
+                            </td>                                     
                         </tr>
                         {% endfor %}
                     </tbody>

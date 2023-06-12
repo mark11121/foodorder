@@ -1,0 +1,110 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block title %}
+Menu
+{% endblock %}
+
+{% block content %}
+
+    <!-- ======= product Section ======= -->
+    <section id="menu" class="menu">
+      <div class="container" data-aos="fade-up">
+<br>
+        <div class="section-header">
+          <h2>Our Menu</h2>
+          <p>Yummy123<span>美味菜單</span></p>
+        </div>
+
+        <ul class="nav nav-tabs d-flex justify-content-center" data-aos="fade-up" data-aos-delay="200">
+          <li>
+            <h2> 
+              <a href="{% url 'product:product_menu' %}">全部料理</a>
+            </h2> 
+        </li><!-- End tab nav item -->
+        {% for product_category in product_categories %}
+        <li>
+            <h2>&nbsp;&nbsp;&nbsp;
+              <a href="{{ product_category.get_absolute_url_2 }}" {% if product_category.is_active %}class="active"{% endif %}>
+                {{ product_category.name }}
+              </a>
+            </h2> 
+        </li><!-- End tab nav item -->
+        {% endfor %} 
+
+ 
+        </ul>
+
+        <div class="tab-content" data-aos="fade-up" data-aos-delay="300">
+
+          <div class="tab-pane fade active show" id="menu-starters">
+
+            <div class="tab-header text-center">
+
+            </div>
+
+            {% if product_items.has_other_pages %}
+            <nav class="blog-pagination">
+              <ul class="justify-content-center">
+                {% if product_items.has_previous %}
+                  <li><a href="?page=1">First</a></li>
+                  <li><a href="?page={{ product_items.previous_page_number }}"><</a></li>
+                {% endif %}
+                {% for num in product_items.paginator.page_range %}
+                  {% if product_items.number == num %}
+                    <li class="active"><a href="#">{{ num }}</a></li>
+                  {% elif num > product_items.number|add:'-3' and num < product_items.number|add:'3' %}
+                    <li><a href="?page={{ num }}">{{ num }}</a></li>
+                  {% endif %}
+                {% endfor %}
+                {% if product_items.has_next %}
+                  <li><a href="?page={{ product_items.next_page_number }}">></a></li>
+                  <li><a href="?page={{ product_items.paginator.num_pages }}">Last</a></li>
+                {% endif %}
+              </ul>
+            </nav>
+            {% endif %}
+            <div class="row gy-5">
+              {% for product in product_items %}
+              <div class="col-lg-4 menu-item">
+                <div class="menupic">
+                <a href="/product/menu_detail/?pid={{product.id}}">
+                  <img class="img-fluid" src="{% if product.image %}{{ product.image.url }}
+                            {% else %}{% static 'img/no_image.png' %} {% endif %}">
+                </a>
+                </div>
+                <h4>{{product.product_category.name}}</h4>
+                <h4>{{ product.name }} <br></h4>
+                <h4>
+                <a href="{% url 'product:edit_product' product.id %}"><img src="{% static 'images/edit.png' %}"></a>
+                <a href="/product/delete_product/?pid={{product.id}}"><img src="{% static 'images/del.png' %}"></a>
+                </h4>
+                <p class="ingredients">
+                  {{ product.description | slice:":30" }}
+                  {% if product.description|length > 30 %}...
+                  <a href="/product/menu_detail/?pid={{product.id}}">詳細資料 <i class="bi bi-arrow-right"></i></a>
+                  {% endif %}
+                </p>
+                
+                <p class="price">
+                  ${{ product.price }}
+                </p>
+              </div><!-- product Item -->
+              {% endfor %}
+
+
+            </div>
+
+ 
+  
+          </div><!-- End Starter product Content -->
+
+          
+        </div>
+  
+
+ 
+
+      </div>
+    </section><!-- End product Section -->
+
+{% endblock %}

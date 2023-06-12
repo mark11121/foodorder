@@ -91,6 +91,11 @@
 
 .blog .posts-list .content {
   margin-top: 20px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* 限制显示的行数 */
+  -webkit-box-orient: vertical;
 }
 
 .blog .posts-list .read-more a {
@@ -116,6 +121,8 @@
 .blog .blog-details .post-img {
   margin: -30px -30px 20px -30px;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
 }
 
 .blog .blog-details .title {

@@ -18,11 +18,13 @@ test
         <div class="gallery-slider swiper">
           <div class="swiper-wrapper align-items-center">
             {% for photo in photos %}
+            
             <div class="swiper-slide">
-              <a class="glightbox" data-gallery="images-gallery" href="{{ photo.image.url }}">
-                <img src="{{ photo.image.url }}" class="img-fluid" alt="">
+              <a class="glightbox" data-gallery="images-gallery" href="{% if photo.image %}{{ photo.image.url }}{% else %}{% static 'img/no_image.png' %}{% endif %}">
+                <img src="{% if photo.image %}{{ photo.image.url }}{% else %}{% static 'img/no_image.png' %}{% endif %}" class="img-fluid" alt="">
               </a>
             </div>
+            
             {% endfor %}
           </div>
           <div class="swiper-pagination"></div>

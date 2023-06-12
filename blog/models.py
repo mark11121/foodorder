@@ -1,6 +1,7 @@
 from django.db.models import Count
 from django.urls import reverse
 from django.db import models
+import os
 
 class Blog_category(models.Model):
     name = models.CharField(max_length=200,
@@ -25,13 +26,21 @@ class Blog_category(models.Model):
     def blog_items_count(self):
         return self.blog_item.annotate(count=Count('blog_category')).count()
 
+
+def blog_image_upload_path(instance, filename):
+    """
+    Returns the upload path for the image field of a blog_item instance.
+    The image is uploaded to a folder named after the blog_category's slug.
+    """
+    return os.path.join('blog', instance.blog_category.slug, filename)
+
 class Blog_item(models.Model):
     blog_category = models.ForeignKey(Blog_category,on_delete=models.CASCADE,                                 
                                  related_name='blog_item')
     blog_title          = models.CharField(max_length=50,null=False)
     blog_content        = models.TextField(blank=False)
     blog_user           = models.CharField(max_length=50,null=False)
-    image               = models.ImageField(upload_to='')
+    image               = models.ImageField(upload_to=blog_image_upload_path, null=True, blank=True)
     blog_created        = models.DateTimeField(auto_now=True)
     blog_likes          = models.IntegerField(default=0)
     blog_hates          = models.IntegerField(default=0)

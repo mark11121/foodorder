@@ -21,7 +21,8 @@ Chefs
           <div class="col-lg-4 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="{{ chef.delay }}">
             <div class="chef-member">
               <div class="member-img">
-                <img src="/media/{{ chef.chef_img }}" class="img-fluid" alt="">
+                <img src="{% if chef.chef_img %}{{ chef.chef_img.url }}
+                {% else %}{% static 'img/no_image.png' %}{% endif %}" class="img-fluid" alt="">
                 <div class="social">
                   <a href=""><i class="bi bi-twitter"></i></a>
                   <a href=""><i class="bi bi-facebook"></i></a>
@@ -33,8 +34,8 @@ Chefs
                 <h4>{{ chef.chef_name }}</h4>
                 <span>{{ chef.chef_title }}</span>
                 <p>{{ chef.chef_profile }}</p>
-                <a href="/chef/edit_chef/?pid={{chef.id}}"><img src="{% static 'images/edit.png' %}"></a>
-                <a href="/chef/del_chef/?pid={{chef.id}}"><img src="{% static 'images/del.png' %}"></a>
+                <a href="{% url 'chef:edit_chef' chef.id %}"><img src="{% static 'images/edit.png' %}"></a>
+                <a href="/chef/delete_chef/?pid={{chef.id}}"><img src="{% static 'images/del.png' %}"></a>
               </div>
             </div>
           </div><!-- End Chefs Member -->

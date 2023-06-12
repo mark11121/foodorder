@@ -892,9 +892,16 @@ section {
   text-align-last: center;
 }
 
+.menu .tab-content .menu-item .menupic {
+  max-height: 360px;
+  overflow: hidden;
+}
+
+
 .menu .tab-content .menu-item .menu-img {
   padding: 0 60px;
   margin-bottom: 15px;
+
 }
 
 .menu .tab-content .menu-item h4 {
@@ -1076,6 +1083,7 @@ section {
   background-color: var(--color-primary);
 }
 
+
 /*--------------------------------------------------------------
 # Chefs Section
 --------------------------------------------------------------*/
@@ -1091,6 +1099,8 @@ section {
 .chefs .chef-member .member-img {
   position: relative;
   overflow: hidden;
+  max-width: 360px;
+  max-height: 360px;
 }
 
 .chefs .chef-member .member-img:after {
@@ -1340,6 +1350,13 @@ section {
 /*--------------------------------------------------------------
 # Contact Section
 --------------------------------------------------------------*/
+
+.prod-size {
+  max-width: 480px;
+  max-height: 360px;
+}
+
+
 .contact .info-item {
   background: #f4f4f4;
   padding: 30px;

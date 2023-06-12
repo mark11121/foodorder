@@ -1,22 +1,22 @@
 {% extends 'main/base.html' %}
 {% load static %}
 {% load bootstrap5 %}
+{% block title %}
+News
+{% endblock %}
 {% block content %}
 <main id="main">
 
   <!-- ======= Breadcrumbs ======= -->
-  <div class="breadcrumbs d-flex align-items-center" style="background-image: url('/img/blog-header.jpg');">
-    <div class="container position-relative d-flex flex-column align-items-center">
-
-      <h2>Blog</h2>
-      <ol>
-        <li><a href="/">Home</a></li>
-        <li><a href="/blog/blog/">Blog</a></li>
-      </ol>
-
-    </div>
-  </div><!-- End Breadcrumbs -->
-
+  <section id="about" class="about">
+    <div class="container-fluid" data-aos="fade-up">
+<br>
+      <div class="section-header">
+        <h2>Our News</h2>
+        <p>最新<span>資訊</span></p>
+      </div>
+    </div>  
+  
   <!-- ======= Blog Section ======= -->
   <section id="blog" class="blog">
     <div class="container" data-aos="fade-up">
@@ -24,10 +24,7 @@
       <div class="row g-5">
 
         <div class="col-lg-8" data-aos="fade-up" data-aos-delay="200">
-          <div class="col-lg-6">
-            {{ blog_category_name }}
-            <a href="{% url 'blog:post_blog' %}">我有話要說</a>
-          </div>
+
           <div class="row gy-5 posts-list">
            {% for res in blogitems %} 
             <div class="col-lg-6">
@@ -43,8 +40,8 @@
 
                 <h2 class="title">
                   <a href="/blog/blog_detail/?pid={{res.id}}">{{ res.blog_title }}</a><br>
-                  <a href="/blog/edit_blog/?pid={{res.id}}"><img src="{% static 'images/edit.png' %}"></a>
-                  <a href="/blog/del_blog/?pid={{res.id}}"><img src="{% static 'images/del.png' %}"></a>
+                  <a href="{% url 'blog:edit_blog' res.id %}"><img src="{% static 'images/edit.png' %}"></a>
+                  <a href="/blog/delete_blog/?pid={{res.id}}"><img src="{% static 'images/del.png' %}"></a>
                 </h2>
 
                 <div class="meta-top">
@@ -136,6 +133,6 @@
 
     </div>
   </section><!-- End Blog Section -->
-
+</section>
 </main><!-- End #main -->
 {% endblock %}

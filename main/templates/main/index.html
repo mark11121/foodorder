@@ -2,21 +2,51 @@
 {% load static %}
 
 {% block title %}
-test
+Yummy123
 {% endblock %}
 
-{% block content %}
+{% block content %}      
+
+     <!-- ======= Events Section ======= -->
+     <section id="events" class="events">
+
+      <div class="container-fluid" data-aos="fade-up">
+<br>
+        <div class="section-header">
+          <h2></h2>
+          <p>美食<span>都在</span>Yummy123</p>
+        </div>
+
+        <div class="slides-3 swiper" data-aos="fade-up" data-aos-delay="100">
+          <div class="swiper-wrapper">
+            {% for res in blogitems %} 
+
+            <div class="swiper-slide event-item d-flex flex-column justify-content-end" style="background-image: url('{% if res.image %}{{ res.image.url }}{% endif %}')">
+              <h3>{{ res.blog_category }}</h3>
+              <div class="price align-self-start">{{ res.blog_title }}</div>
+              <p class="description">
+                {{ res.blog_content }}
+              </p>
+            </div><!-- End Event item -->
+            
+            {% endfor %}
+          </div>
+          <div class="swiper-pagination"></div>
+        </div>
+
+      </div>
+    </section><!-- End Events Section -->
 
  <!-- ======= Hero Section ======= -->
  <section id="hero" class="hero d-flex align-items-center section-bg">
   <div class="container">
     <div class="row justify-content-between gy-5">
       <div class="col-lg-5 order-2 order-lg-1 d-flex flex-column justify-content-center align-items-center align-items-lg-start text-center text-lg-start">
-        <h2 data-aos="fade-up">Enjoy Your Healthy<br>Delicious Food</h2>
-        <p data-aos="fade-up" data-aos-delay="100">Sed autem laudantium dolores. Voluptatem itaque ea consequatur eveniet. Eum quas beatae cumque eum quaerat.</p>
+        <h2 data-aos="fade-up">美食都在<br>Yummy123</h2>
+        <p data-aos="fade-up" data-aos-delay="100">好吃好喝好玩的美食都在Yummy123</p>
         <div class="d-flex" data-aos="fade-up" data-aos-delay="200">
           <a href="#book-a-table" class="btn-book-a-table">Book a Table</a>
-          <a href="https://www.youtube.com/watch?v=LXb3EKWsInQ" class="glightbox btn-watch-video d-flex align-items-center"><i class="bi bi-play-circle"></i><span>Watch Video</span></a>
+          <a href="https://youtu.be/dQw4w9WgXcQ" class="glightbox btn-watch-video d-flex align-items-center"><i class="bi bi-play-circle"></i><span>Watch Video</span></a>
         </div>
       </div>
       <div class="col-lg-5 order-1 order-lg-2 text-center text-lg-start">

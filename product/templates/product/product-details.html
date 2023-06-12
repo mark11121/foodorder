@@ -27,23 +27,33 @@
 
             <article class="product-details">
 
-              <div class="post-img">
-                <img src="{% if product_item.image %}{{ product_item.image.url }}
+              <div class="post-img"  >
+                <img style="max-height: 240px;" src="{% if product.image %}{{ product.image.url }}
                 {% else %}{% static 'img/no_image.png' %} {% endif %}" alt="" class="img-fluid">
               </div>
 
-              <h2 class="title">{{ product_item.product_title }}</h2>
+              <h2 class="title">{{ product.name }}</h2>
               
               <div class="meta-top">
                
               </div><!-- End meta top -->
 
               <div class="content">
-                <p>{{ product_item.product_description }}</p>
+                <p>{{ product.description }}</p>
+                <p>{{ product.price }}</p>
                 <a href="{{request.META.HTTP_REFERER}}">返回</a>
               </div><!-- End post content -->
 
-                              
+              <form action="{% url "cart:cart_add" product.id %}" method="post">
+                {% csrf_token %}
+                {{ cart_product_form }}
+                {% buttons %}
+                    <button type="submit" class="btn btn-success btn-product">
+                        <span class="glyphicon glyphicon-shopping-cart"></span> Add to cart
+                    </button>
+                {% endbuttons %}
+              </form>
+
             </article><!-- End product post -->
  
           </div>

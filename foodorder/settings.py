@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'gallery',
     'chef',
     'django.contrib.humanize',
+    'niceadmin',
+    'cart',
 ]
 
 MIDDLEWARE = [
@@ -73,6 +75,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'cart.context_processors.cart',
+                'accounts.context_processors.login_status',
             ],
         },
     },
@@ -83,11 +87,22 @@ WSGI_APPLICATION = 'foodorder.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+'''
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'foodorder',
+        'USER': 'root',
+        'PASSWORD': 'lliu8879576',
+        'HOST': 'localhost',
+        'PORT':'3306',
     }
 }
 
@@ -139,3 +154,6 @@ MEDIA_URL = 'media/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CART_SESSION_ID = 'cart'
+

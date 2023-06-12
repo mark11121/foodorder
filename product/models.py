@@ -5,6 +5,7 @@ from django.db.models import Count
 import os
 from django.db.models import Sum
 from django.utils import timezone
+from django.db.models.signals import pre_save
 
  
 # Create your models here.
@@ -29,6 +30,9 @@ class Product_category(models.Model):
     
     def get_absolute_url(self):
         return reverse('product:product_list_by_category', args=[self.slug])
+    
+    def get_absolute_url_2(self):
+        return reverse('product:product_list_by_category_2', args=[self.slug])
 
     def product_items_count(self):
         return self.product_item.annotate(count=Count('product_category')).count()
@@ -67,7 +71,22 @@ class Product(models.Model):
                 stockOut = int(stockOut) + int(stock.quantity)
         available  = stockIn - stockOut
         return available
-    
+
+
+@receiver(pre_save, sender=Product)
+def product_pre_save(sender, instance, *args, **kwargs):
+    if not instance.code:
+        
+        last_product = sender.objects.order_by('-code').first()
+        if last_product:
+            last_code = int(last_product.code)
+            new_code = f"{str(last_code+1).zfill(6)}"
+        else:
+            new_code = '000001'
+        instance.code = new_code 
+
+
+
 class Stock(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.FloatField(default=0)
@@ -123,4 +142,34 @@ def delete_stock(sender, instance, **kwargs):
 
 
     
+class Product_sales(models.Model):
+    customer_code = models.CharField(max_length=20)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    cellphone = models.CharField(max_length=20)
+    email = models.EmailField()
+    address = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
     
+    class Meta:
+        ordering = ('-created_at',)
+
+    def __str__(self):
+        return self.customer_code
+
+    def get_total_cost(self):
+        return sum(item.get_cost() for item in self.items.all())
+    
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Product_sales,on_delete=models.CASCADE,related_name='items')
+    product = models.ForeignKey(Product,on_delete=models.CASCADE,related_name='order_items')
+    # 台灣價錢都是整數，所以可以設定 decimal_places=0
+    price = models.DecimalField(max_digits=10, decimal_places=0)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return '{}'.format(self.id)
+
+    def get_cost(self):
+        return self.price * self.quantity
